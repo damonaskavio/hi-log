@@ -1,0 +1,7 @@
+.pageTitleRoot {
+  margin-top: var(--sp-lg);
+  margin-bottom: var(--sp-sm);
+  font-size: var(--fs-xl);
+  font-weight: var(--fw-bold);
+  text-align: center;
+}

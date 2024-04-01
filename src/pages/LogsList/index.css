@@ -1,0 +1,14 @@
+.emptyMsg {
+  text-align: center;
+  padding: var(--sp-xl);
+  margin-top: var(--sp-md);
+
+  animation: fadeIn 0.3s, rightSlideIn 0.3s;
+}
+
+.logsListContainer {
+  padding: var(--sp-xl);
+  display: flex;
+  flex-direction: column;
+  row-gap: var(--sp-md);
+}

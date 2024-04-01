@@ -1,0 +1,17 @@
+.logCardRoot {
+  border-radius: var(--radius-xs);
+  background-color: var(--clr-neu-800);
+  padding: var(--sp-lg);
+
+  animation: fadeIn .5s, rightSlideIn .5s;
+
+  .name {
+    font-weight: var(--fw-semi-bold);
+  }
+
+  .date {
+    opacity: 0.6;
+    font-size: var(--fs-sm);
+    text-align: right;
+  }
+}

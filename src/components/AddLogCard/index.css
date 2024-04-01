@@ -1,0 +1,35 @@
+.addLogCardRoot {
+  margin: auto;
+  margin-top: var(--sp-xl);
+  border: 3px solid var(--clr-neu-100);
+  border-radius: var(--radius-lg);
+  height: 150px;
+  width: 150px;
+  font-weight: var(--fw-semi-bold);
+
+  display: flex;
+  flex-direction: column;
+  row-gap: var(--sp-sm);
+  align-items: center;
+  justify-content: center;
+
+  animation: fadeIn 0.3s;
+
+  transition: height 0.25s, border-color 0.25s, color 0.25s;
+
+  &:active {
+    border-color: var(--clr-pri-400);
+    color: var(--clr-pri-400);
+    filter: drop-shadow(0 0 1em hsl(from var(--clr-neu-100) h s l / 0.3));
+  }
+
+  &[data-compact="true"] {
+    margin-top: var(--sp-xs);
+    flex-direction: row;
+    height: 50px;
+    width: 90%;
+    padding: var(--sp-md);
+    border-radius: var(--radius-md);
+    column-gap: var(--sp-sm);
+  }
+}
