@@ -1,0 +1,15 @@
+.iconButtonRoot {
+  border-radius: 50%;
+  height: 30px;
+  width: 30px;
+  font-weight: var(--fw-semi-bold);
+
+  animation: fadeIn 0.3s;
+
+  transition: height 0.25s, border-color 0.25s, color 0.25s;
+
+  &:active {
+    color: var(--clr-pri-400);
+    filter: drop-shadow(0 0 1em hsl(from var(--clr-neu-100) h s l / 0.3));
+  }
+}

@@ -1,0 +1,36 @@
+.modalRoot {
+  /* position: fixed;
+  height: 100vh;
+  width: 100vh; */
+  outline: none;
+  border: none;
+
+  height: 100vh;
+  width: 100vw;
+  margin: 0;
+
+  max-height: 100vh;
+  max-width: 100vw;
+
+  background-color: var(--clr-neu-900);
+  color: inherit;
+}
+
+.closeIcon {
+  position: absolute;
+  top: var(--sp-sm);
+  right: var(--sp-md);
+}
+
+@media only screen and (min-width: 768px) {
+  .modalRoot {
+    align-self: center;
+    justify-self: center;
+
+    height: 400px;
+    width: 500px;
+
+    border-radius: var(--radius-sm);
+    filter: drop-shadow(0 0 1em hsl(from var(--clr-neu-100) h s l / 0.1));
+  }
+}

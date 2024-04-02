@@ -1,35 +1,53 @@
+import Button from "@/components/Button";
+import LogCard from "@/components/LogCard";
+import PageHeader from "@/components/PageHeader";
 import useLogStore from "@/store/useLogStore";
-import dayjs from "dayjs";
 import isEmpty from "lodash/isEmpty";
+import { useState } from "react";
+import { useTranslation } from "react-i18next";
 import { useShallow } from "zustand/react/shallow";
 import "./index.css";
-import AddLogCard from "@/components/AddLogCard";
-import LogCard from "@/components/LogCard";
-import PageTitle from "@/components/PageTitle";
+import AddLogModal from "@/components/Modal/AddLogModal";
+import { IoAddCircleOutline } from "react-icons/io5";
+import dayjs from "dayjs";
+import { FieldValues } from "react-hook-form";
 
 const LogsList = () => {
+  const { t } = useTranslation();
+
   const [logs, addLog, resetLogs] = useLogStore(
     useShallow((state) => [state.logs, state.addLog, state.resetLogs])
   );
 
-  const handleAddLog = () => {
+  const [addModalOpen, setAddModalOpen] = useState(false);
+
+  const handleAddLogClick = () => {
+    setAddModalOpen(true);
+  };
+
+  const handleAddLog = (values: FieldValues) => {
+    console.log("add log", values);
+    const { name } = values;
+
     addLog({
       id: `${logs.length + 1}`,
-      name: `Test Log ${logs.length + 1}`,
+      name,
       updatedAt: dayjs().toDate(),
     });
+  };
+
+  const handleAddLogClose = () => {
+    setAddModalOpen(false);
   };
 
   const isLogsEmpty = isEmpty(logs);
 
   return (
     <div>
-      <PageTitle>Logs List</PageTitle>
+      <PageHeader>{t("logs list")}</PageHeader>
       {isLogsEmpty && (
         <div className="emptyMsg">
-          <p>
-            It seems like you don't have any logs. Would you like to make one?
-          </p>
+          <p>{t("logs empty")}</p>
         </div>
       )}
 
@@ -41,13 +59,26 @@ const LogsList = () => {
         </div>
       )}
 
-      <AddLogCard add={handleAddLog} compact={!isLogsEmpty} />
+      <Button
+        icon={<IoAddCircleOutline />}
+        onClick={handleAddLogClick}
+        compact={!isLogsEmpty}
+      >
+        {t("add log")}
+      </Button>
+
       <button
         style={{ marginTop: 20, marginLeft: 20 }}
         onClick={() => resetLogs()}
       >
         reset
       </button>
+
+      <AddLogModal
+        open={addModalOpen}
+        onClose={() => handleAddLogClose()}
+        onSubmit={handleAddLog}
+      />
     </div>
   );
 };

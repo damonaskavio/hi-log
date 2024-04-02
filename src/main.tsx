@@ -3,6 +3,7 @@ import ReactDOM from "react-dom/client";
 import { registerSW } from "virtual:pwa-register";
 import App from "./App";
 import "./index.css";
+import "./localization";
 
 // add this to prompt for a refresh
 const updateSW = registerSW({
