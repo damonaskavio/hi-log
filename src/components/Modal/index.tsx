@@ -29,13 +29,13 @@ const Modal = ({
   }, [open]);
 
   return createPortal(
-    <dialog ref={dialogRef} className="modalRoot">
+    <dialog ref={dialogRef} className="modal-root">
       <PageHeader>
         {title}
         <IconButton
           onClick={() => onClose?.()}
           icon={<IoClose />}
-          className="closeIcon"
+          className="close-icon"
         />
       </PageHeader>
 

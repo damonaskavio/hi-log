@@ -11,6 +11,8 @@ import AddLogModal from "@/components/Modal/AddLogModal";
 import { IoAddCircleOutline } from "react-icons/io5";
 import dayjs from "dayjs";
 import { FieldValues } from "react-hook-form";
+import PageContent from "@/components/PageContent";
+import Spacer from "@/components/Spacer";
 
 const LogsList = () => {
   const { t } = useTranslation();
@@ -51,21 +53,25 @@ const LogsList = () => {
         </div>
       )}
 
-      {!isLogsEmpty && (
-        <div className="logsListContainer">
-          {logs.map((log) => (
-            <LogCard key={`log_${log.id}`} log={log} />
-          ))}
-        </div>
-      )}
+      <PageContent>
+        {!isLogsEmpty && (
+          <div className="logsListContainer">
+            {logs.map((log) => (
+              <LogCard key={`log_${log.id}`} log={log} />
+            ))}
+          </div>
+        )}
 
-      <Button
-        icon={<IoAddCircleOutline />}
-        onClick={handleAddLogClick}
-        compact={!isLogsEmpty}
-      >
-        {t("add log")}
-      </Button>
+        <Spacer />
+
+        <Button
+          icon={<IoAddCircleOutline />}
+          onClick={handleAddLogClick}
+          compact={!isLogsEmpty}
+        >
+          {t("add log")}
+        </Button>
+      </PageContent>
 
       <button
         style={{ marginTop: 20, marginLeft: 20 }}

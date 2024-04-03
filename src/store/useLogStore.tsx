@@ -19,7 +19,7 @@ const useLogStore = create<LogState>()(
   persist(
     (set) => ({
       logs: [],
-      addLog: (log) => set((state) => ({ logs: [...state.logs, log] })),
+      addLog: (log) => set((state) => ({ logs: [log, ...state.logs] })),
       resetLogs: () => set(() => ({ logs: [] })),
     }),
     {

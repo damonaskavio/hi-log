@@ -1,3 +1,17 @@
 .inputRoot {
-    
+  border-radius: var(--radius-xl);
+  padding: var(--sp-md);
+  padding-left: var(--sp-lg);
+  border: none;
+  width: 100%;
+  outline-color: transparent;
+  transition: outline-color 0.3s;
+  background-color: var(--clr-neu-800);
+
+  &:focus {
+    outline-width: 2px;
+    outline-style: solid;
+    outline-color: var(--clr-pri-400);
+    color: var(--clr-pri-400);
+  }
 }

@@ -5,7 +5,7 @@ const LogCard = ({ log }: { log: Log }) => {
   const { name, updatedAt } = log;
 
   return (
-    <div className="logCardRoot">
+    <div className="log-card-root">
       <p className="name">{name}</p>
       <p className="date">{updatedAt.toLocaleString()}</p>
     </div>

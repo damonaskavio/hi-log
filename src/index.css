@@ -1,6 +1,6 @@
 :root {
-  --clr-pri-400: hsl(237, 100%, 70%);
-  --clr-pri-500: hsl(237, 86%, 64%);
+  --clr-pri-400: hsl(355, 68%, 80%);
+  --clr-pri-500: hsl(355, 68%, 60%);
 
   --clr-neu-100: hsla(0, 0%, 87%);
 
@@ -12,6 +12,7 @@
   --radius-sm: 8px;
   --radius-md: 12px;
   --radius-lg: 16px;
+  --radius-xl: 20px;
 
   --fw-regular: 400;
   --fw-semi-bold: 500;

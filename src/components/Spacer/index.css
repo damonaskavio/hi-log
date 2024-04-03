@@ -1,0 +1,15 @@
+.spacer-sm {
+  padding: var(--sp-sm);
+}
+
+.spacer-md {
+  padding: var(--sp-md);
+}
+
+.spacer-lg {
+  padding: var(--sp-lg);
+}
+
+.spacer-xl {
+  padding: var(--sp-xl);
+}

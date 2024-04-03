@@ -13,7 +13,7 @@ const IconButton = ({
   onClick,
 }: PropsWithChildren<IconButtonOptions>) => {
   return (
-    <div className={`iconButtonRoot ${className}`} onClick={() => onClick?.()}>
+    <div className={`icon-button-root ${className}`} onClick={() => onClick?.()}>
       {cloneElement(icon, { size: 30, color: "inherit" })}
     </div>
   );

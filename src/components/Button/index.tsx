@@ -18,7 +18,7 @@ const Button = ({
   return (
     <div
       data-compact={compact}
-      className={`buttonRoot ${className}`}
+      className={`button-root ${className}`}
       onClick={() => onClick?.()}
     >
       {icon && cloneElement(icon, { size: 30 })}

@@ -1,4 +1,4 @@
-.modalRoot {
+.modal-root {
   /* position: fixed;
   height: 100vh;
   width: 100vh; */
@@ -16,14 +16,14 @@
   color: inherit;
 }
 
-.closeIcon {
+.close-icon {
   position: absolute;
   top: var(--sp-sm);
   right: var(--sp-md);
 }
 
 @media only screen and (min-width: 768px) {
-  .modalRoot {
+  .modal-root {
     align-self: center;
     justify-self: center;
 

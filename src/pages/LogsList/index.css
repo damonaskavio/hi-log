@@ -7,8 +7,7 @@
 }
 
 .logsListContainer {
-  padding: var(--sp-xl);
   display: flex;
   flex-direction: column;
-  row-gap: var(--sp-md);
+  row-gap: var(--sp-lg);
 }
