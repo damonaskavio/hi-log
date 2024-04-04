@@ -6,8 +6,8 @@ import { FieldValues, useForm } from "react-hook-form";
 
 import Spacer from "@/components/Spacer";
 import PageContent from "@/components/PageContent";
-import DatePicker from "react-date-picker";
 import { useState } from "react";
+import Form from "@/components/Form";
 
 export type AddLogModalOptions = {
   open?: boolean;
@@ -23,7 +23,7 @@ const AddLogModal = ({ open, onClose, onSubmit }: AddLogModalOptions) => {
   const { t } = useTranslation();
 
   const { register, handleSubmit, reset } = useForm({
-    defaultValues: { name: "" },
+    defaultValues: { name: "", logDate: new Date() },
   });
 
   const onSubmitClick = () => {
@@ -34,13 +34,12 @@ const AddLogModal = ({ open, onClose, onSubmit }: AddLogModalOptions) => {
     })();
   };
 
-  const [date, setDate] = useState<Value>(new Date());
-
   return (
     <Modal title={t("add log")} open={open} onClose={() => onClose?.()}>
       <PageContent>
-        <Input formRegister={register("name")} placeholder="Name" />
-        {/* <DatePicker onChange={setDate} value={date} /> */}
+        <Form>
+          <Input formRegister={register("name")} placeholder="Name" />
+        </Form>
         <Spacer />
         <Button onClick={onSubmitClick}>{t("add")}</Button>
       </PageContent>

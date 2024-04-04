@@ -1,0 +1,10 @@
+.form-root {
+  display: flex;
+  row-gap: var(--sp-lg);
+  column-gap: var(--sp-lg);
+  flex-direction: column;
+
+  &[data-direction="row"] {
+    flex-direction: row;
+  }
+}

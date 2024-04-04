@@ -4,6 +4,8 @@ const en_US = {
     "It seems like you don't have any logs. Would you like to make one?",
   "add log": "Add Log",
   add: "Add",
+  name: "Name",
+  "log date": "Log Date",
 };
 
 export default en_US;

@@ -1,4 +1,5 @@
 .button-root {
+  user-select: none;
   margin: auto;
   margin-top: var(--sp-xl);
   border: 3px solid var(--clr-neu-100);
@@ -17,7 +18,7 @@
 
   transition: height 0.25s, border-color 0.25s, color 0.25s;
 
-  &:active {
+  &[data-active="true"] {
     border-color: var(--clr-pri-400);
     color: var(--clr-pri-400);
     filter: drop-shadow(0 0 1em hsl(from var(--clr-neu-100) h s l / 0.3));

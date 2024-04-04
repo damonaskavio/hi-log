@@ -1,17 +1,18 @@
+import { InputHTMLAttributes } from "react";
 import { UseFormRegisterReturn } from "react-hook-form";
 import "./index.css";
 
-export type InputOptions = {
+export interface InputOptions extends InputHTMLAttributes<HTMLInputElement> {
   formRegister?: UseFormRegisterReturn<string>;
-  placeholder?: string;
-};
+}
 
-const Input = ({ formRegister, placeholder }: InputOptions) => {
+const Input = ({ formRegister, placeholder, type = "text" }: InputOptions) => {
   return (
     <input
       className="inputRoot"
       placeholder={placeholder}
       {...(formRegister || {})}
+      type={type}
     />
   );
 };
