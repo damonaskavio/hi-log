@@ -4,8 +4,6 @@ import { LuListStart } from "react-icons/lu";
 import { useNavigate } from "react-router-dom";
 import PageHeader from "..";
 import "./index.css";
-import useHiLogStore from "@/store/useHiLogStore";
-import { useShallow } from "zustand/react/shallow";
 
 export type LayoutHeaderOptions = {
   title?: string;

@@ -1,6 +1,6 @@
-import { PropsWithChildren, cloneElement, useEffect, useState } from "react";
-import "./index.css";
 import useClickEvent from "@/hooks/useClickEvent";
+import { PropsWithChildren, cloneElement } from "react";
+import "./index.css";
 
 export type ButtonOptions = {
   className?: string;
