@@ -7,7 +7,7 @@ export type SpacerOptions = {
 };
 
 const Spacer = ({ type = "md" }: SpacerOptions) => {
-  function getClassName(): string {
+  const getClassName = (): string => {
     switch (type) {
       case "sm":
         return "spacer-sm";
@@ -20,7 +20,7 @@ const Spacer = ({ type = "md" }: SpacerOptions) => {
       default:
         return "spacer-md";
     }
-  }
+  };
 
   return <div className={getClassName()} />;
 };

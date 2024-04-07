@@ -15,7 +15,7 @@ const toHex = (uInt8Array: Uint8Array) =>
 const maxEntropy = 65_536;
 const uuidLength = 10;
 
-function getRandomValues(byteLength: number) {
+const getRandomValues = (byteLength: number) => {
   const generatedBytes = new Uint8Array(byteLength);
 
   for (
@@ -32,11 +32,13 @@ function getRandomValues(byteLength: number) {
   }
 
   return generatedBytes;
-}
+};
 
-export function getUUID() {
+const getUUID = () => {
   const byteLength = Math.ceil(uuidLength * 0.5);
   const generatedBytes = getRandomValues(byteLength);
 
   return toHex(generatedBytes).slice(0, uuidLength);
-}
+};
+
+export default getUUID;

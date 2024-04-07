@@ -8,8 +8,10 @@ export type Log = {
 };
 
 export interface LogSlice {
+  // States
   logs: Log[];
   selectedLog: Log | undefined;
+  // Actions
   addLog: (log: Log) => void;
   setSelectedLog: (log?: Log) => void;
   getLog: (id: string) => Log | undefined;

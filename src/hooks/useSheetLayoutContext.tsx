@@ -6,6 +6,8 @@ export type SheetLayoutContextType = {
   setRightMenu: Dispatch<SetStateAction<JSX.Element[]>>;
 };
 
-export default function useSheetLayoutContext() {
+const useSheetLayoutContext = () => {
   return useOutletContext<SheetLayoutContextType>();
-}
+};
+
+export default useSheetLayoutContext;

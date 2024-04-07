@@ -1,6 +1,6 @@
 import SheetLayout from "@/layouts/SheetLayout";
 import LogsList from "@/pages/LogsList";
-import SheetDetails from "@/pages/SheetDetails";
+import SheetRecords from "@/pages/SheetRecords";
 import SheetMedia from "@/pages/SheetMedia";
 import SheetsList from "@/pages/SheetsList";
 
@@ -10,7 +10,7 @@ const routes = [
     element: <SheetLayout />,
     children: [
       { path: "/log/:logId/sheets", element: <SheetsList /> },
-      { path: "/log/:logId/sheet/:sheetId", element: <SheetDetails /> },
+      { path: "/log/:logId/sheet/:sheetId", element: <SheetRecords /> },
       { path: "/log/:logId/sheet/:sheetId/media", element: <SheetMedia /> },
     ],
   },

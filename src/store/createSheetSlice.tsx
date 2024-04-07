@@ -20,8 +20,10 @@ export type SheetList = {
 };
 
 export interface SheetSlice {
+  // States
   selectedSheet: Sheet | undefined;
   sheets: SheetList;
+  // Actions
   addSheet: ({
     logId,
     name,
@@ -48,7 +50,7 @@ const createSheetSlice: StateCreator<SheetSlice, [], [], SheetSlice> = (
   sheets: {},
   addSheet: ({ logId, name, tags, desc }) => {
     let sheets = get().sheets;
-    const logSheets = sheets[logId] || [];
+    const logSheets = [...sheets[logId]] || [];
     const sheetIds = logSheets.map((ls) => ({ id: ls.id }));
 
     const uuid = getUniqueUUID(sheetIds, "id");
@@ -61,8 +63,7 @@ const createSheetSlice: StateCreator<SheetSlice, [], [], SheetSlice> = (
       desc,
     });
 
-    sheets = { ...sheets };
-    sheets[logId] = logSheets;
+    sheets = { ...sheets, [logId]: logSheets };
 
     set(() => ({ sheets }));
   },

@@ -6,10 +6,17 @@ export interface InputOptions extends InputHTMLAttributes<HTMLInputElement> {
   formRegister?: UseFormRegisterReturn<string>;
 }
 
-const Input = ({ formRegister, placeholder, type = "text" }: InputOptions) => {
+const Input = ({
+  className,
+  formRegister,
+  placeholder,
+  type = "text",
+  ...inputOptions
+}: InputOptions) => {
   return (
     <input
-      className="input-root"
+      {...inputOptions}
+      className={`input-root ${className}`}
       placeholder={placeholder}
       {...(formRegister || {})}
       type={type}

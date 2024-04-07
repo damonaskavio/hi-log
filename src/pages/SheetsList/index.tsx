@@ -13,6 +13,8 @@ import "./index.css";
 
 const SheetsList = () => {
   const [addModalOpen, setAddModalOpen] = useState(false);
+  const { setRightMenu } = useSheetLayoutContext();
+  const { logId } = useParams();
 
   const [
     sheets,
@@ -38,8 +40,6 @@ const SheetsList = () => {
     ])
   );
 
-  const { logId } = useParams();
-
   const handleAddModalClick = () => {
     setAddModalOpen(true);
   };
@@ -59,8 +59,6 @@ const SheetsList = () => {
   const handleAddModalClose = () => {
     setAddModalOpen(false);
   };
-
-  const { setRightMenu } = useSheetLayoutContext();
 
   useEffect(() => {
     if (logId) {

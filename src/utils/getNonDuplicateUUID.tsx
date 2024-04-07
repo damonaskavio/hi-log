@@ -1,15 +1,15 @@
-import { getUUID } from "./getUUID";
+import getUUID from "./getUUID";
 
 export interface IIndexable {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   [key: string]: string;
 }
 
-export default function getUniqueUUID(
+const getUniqueUUID = (
   arr: IIndexable[],
   lookUpKey: string,
   id?: string
-) {
+): string => {
   const uuid = id === undefined ? getUUID() : id;
 
   const dupeFound = arr.find((a) => a[lookUpKey] === uuid);
@@ -19,4 +19,6 @@ export default function getUniqueUUID(
   }
 
   return uuid;
-}
+};
+
+export default getUniqueUUID;
