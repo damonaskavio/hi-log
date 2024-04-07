@@ -9,7 +9,7 @@ export interface InputOptions extends InputHTMLAttributes<HTMLInputElement> {
 const Input = ({ formRegister, placeholder, type = "text" }: InputOptions) => {
   return (
     <input
-      className="inputRoot"
+      className="input-root"
       placeholder={placeholder}
       {...(formRegister || {})}
       type={type}

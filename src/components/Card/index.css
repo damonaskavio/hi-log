@@ -1,0 +1,31 @@
+.card-root {
+  display: flex;
+  flex-direction: column;
+  border-radius: var(--radius-xs);
+  background-color: var(--clr-neu-800);
+  padding: var(--sp-lg);
+
+  animation: fadeIn 0.5s, rightSlideIn 0.5s;
+
+  transition: transform var(--ts-fast), background-color var(--ts-fast),
+    color var(--ts-fast);
+
+  .name {
+    font-weight: var(--fw-semi-bold);
+  }
+
+  .date {
+    opacity: 0.6;
+    font-size: var(--fs-sm);
+    text-align: right;
+  }
+
+  &[data-active="true"] {
+    transform: scale(0.98);
+  }
+
+  &[data-selected="true"] {
+    border: 2px solid var(--clr-pri-400);
+    color: var(--clr-pri-400);
+  }
+}

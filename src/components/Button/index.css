@@ -16,7 +16,8 @@
 
   animation: fadeIn 0.3s;
 
-  transition: height 0.25s, border-color 0.25s, color 0.25s;
+  transition: filter var(--ts-fast), height var(--ts-fast),
+    border-color var(--ts-fast), color var(--ts-fast);
 
   &[data-active="true"] {
     border-color: var(--clr-pri-400);

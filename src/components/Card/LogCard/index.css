@@ -1,0 +1,23 @@
+.log-card-root {
+  height: 100px;
+  max-height: 100px;
+
+  .content {
+    flex: 1;
+  }
+
+  .name {
+    font-weight: var(--fw-semi-bold);
+  }
+
+  .date {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    column-gap: var(--sp-md);
+    opacity: 0.6;
+    font-size: var(--fs-sm);
+    text-align: right;
+    justify-self: flex-end;
+  }
+}

@@ -1,44 +1,40 @@
 import Button from "@/components/Button";
-import LogCard from "@/components/LogCard";
+import LogCard from "@/components/Card/LogCard";
+import AddLogModal from "@/components/Modal/AddLogModal";
+import PageContent from "@/components/PageContent";
 import PageHeader from "@/components/PageHeader";
-import useLogStore from "@/store/useLogStore";
+import Spacer from "@/components/Spacer";
+import useHiLogStore from "@/store/useHiLogStore";
 import isEmpty from "lodash/isEmpty";
 import { useState } from "react";
+import { FieldValues } from "react-hook-form";
 import { useTranslation } from "react-i18next";
+import { IoAddCircleOutline } from "react-icons/io5";
 import { useShallow } from "zustand/react/shallow";
 import "./index.css";
-import AddLogModal from "@/components/Modal/AddLogModal";
-import { IoAddCircleOutline } from "react-icons/io5";
-import dayjs from "dayjs";
-import { FieldValues } from "react-hook-form";
-import PageContent from "@/components/PageContent";
-import Spacer from "@/components/Spacer";
 
 const LogsList = () => {
   const { t } = useTranslation();
 
-  const [logs, addLog, resetLogs] = useLogStore(
-    useShallow((state) => [state.logs, state.addLog, state.resetLogs])
+  const [logs, createLog, resetAll] = useHiLogStore(
+    useShallow((state) => [state.logs, state.createLog, state.resetAll])
   );
 
   const [addModalOpen, setAddModalOpen] = useState(false);
 
-  const handleAddLogClick = () => {
+  const handleAddModalClick = () => {
     setAddModalOpen(true);
   };
 
   const handleAddLog = (values: FieldValues) => {
-    console.log("add log", values);
     const { name } = values;
 
-    addLog({
-      id: `${logs.length + 1}`,
+    createLog({
       name,
-      updatedAt: dayjs().toDate(),
     });
   };
 
-  const handleAddLogClose = () => {
+  const handleAddModalClose = () => {
     setAddModalOpen(false);
   };
 
@@ -48,14 +44,14 @@ const LogsList = () => {
     <div>
       <PageHeader>{t("logs list")}</PageHeader>
       {isLogsEmpty && (
-        <div className="emptyMsg">
+        <div className="empty-msg">
           <p>{t("logs empty")}</p>
         </div>
       )}
 
       <PageContent>
         {!isLogsEmpty && (
-          <div className="logsListContainer">
+          <div className="logs-list-container">
             {logs.map((log) => (
               <LogCard key={`log_${log.id}`} log={log} />
             ))}
@@ -66,7 +62,7 @@ const LogsList = () => {
 
         <Button
           icon={<IoAddCircleOutline />}
-          onClick={handleAddLogClick}
+          onClick={handleAddModalClick}
           compact={!isLogsEmpty}
         >
           {t("add log")}
@@ -75,14 +71,14 @@ const LogsList = () => {
 
       <button
         style={{ marginTop: 20, marginLeft: 20 }}
-        onClick={() => resetLogs()}
+        onClick={() => resetAll()}
       >
         reset
       </button>
 
       <AddLogModal
         open={addModalOpen}
-        onClose={() => handleAddLogClose()}
+        onClose={() => handleAddModalClose()}
         onSubmit={handleAddLog}
       />
     </div>

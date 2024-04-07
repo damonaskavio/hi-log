@@ -1,8 +1,33 @@
 .page-header-root {
-  position: relative;
+  height: 50px;
+  max-height: 50px;
+  display: flex;
+  align-items: center;
   margin-top: var(--sp-lg);
   margin-bottom: var(--sp-sm);
-  font-size: var(--fs-xl);
+  font-size: var(--fs-lg);
   font-weight: var(--fw-bold);
-  text-align: center;
+
+  padding-left: var(--sp-md);
+  padding-right: var(--sp-md);
+
+  .page-header-title {
+    text-align: center;
+  }
+
+  .page-header-left {
+    flex: 1;
+    display: flex;
+    column-gap: var(--sp-xs);
+    align-items: center;
+    justify-content: flex-start;
+  }
+
+  .page-header-right {
+    flex: 1;
+    display: flex;
+    column-gap: var(--sp-xs);
+    align-items: center;
+    justify-content: flex-end;
+  }
 }

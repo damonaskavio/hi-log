@@ -7,6 +7,7 @@
   --clr-neu-700: hsl(0, 0%, 34%);
   --clr-neu-800: hsl(0, 0%, 24%);
   --clr-neu-900: hsl(0, 0%, 14%);
+  --clr-neu-1000: hsl(0, 0%, 10%);
 
   --radius-xs: 4px;
   --radius-sm: 8px;
@@ -28,6 +29,10 @@
   --sp-md: 0.5em;
   --sp-lg: 0.75em;
   --sp-xl: 1em;
+
+  --ts-fast: 0.1s;
+  --ts-normal: 0.25s;
+  --ts-slow: 0.5s;
 
   font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
   font-size: var(--fs-md);

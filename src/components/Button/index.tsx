@@ -1,5 +1,6 @@
 import { PropsWithChildren, cloneElement, useEffect, useState } from "react";
 import "./index.css";
+import useClickEvent from "@/hooks/useClickEvent";
 
 export type ButtonOptions = {
   className?: string;
@@ -15,40 +16,14 @@ const Button = ({
   onClick,
   compact = true,
 }: PropsWithChildren<ButtonOptions>) => {
-  const [active, setActive] = useState(false);
-
-  const listener = () => {
-    setActive(false);
-  };
-
-  const activate = () => {
-    window.addEventListener("pointerup", listener, { once: true });
-    setActive(true);
-  };
-
-  const deactivate = () => setActive(false);
-
-  useEffect(() => {
-    return () => {
-      window.removeEventListener("pointerup", listener);
-    };
-  }, []);
+  const [active, clickEvent] = useClickEvent(onClick);
 
   return (
     <div
       data-active={active}
       data-compact={compact}
       className={`button-root ${className}`}
-      onClick={() => {
-        setTimeout(() => {
-          onClick?.();
-        }, 100);
-      }}
-      onPointerDown={activate}
-      onPointerUp={deactivate}
-      onMouseUp={deactivate}
-      onTouchEnd={deactivate}
-      onBlur={deactivate}
+      {...clickEvent}
     >
       {icon && cloneElement(icon, { size: 30 })}
       <p>{children}</p>

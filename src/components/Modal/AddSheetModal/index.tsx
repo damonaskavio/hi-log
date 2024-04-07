@@ -1,25 +1,24 @@
-import { useTranslation } from "react-i18next";
-import Modal from "..";
 import Button from "@/components/Button";
 import Input from "@/components/Input";
 import { FieldValues, useForm } from "react-hook-form";
+import { useTranslation } from "react-i18next";
+import Modal from "..";
 
-import Spacer from "@/components/Spacer";
-import PageContent from "@/components/PageContent";
-import { useState } from "react";
 import Form from "@/components/Form";
+import PageContent from "@/components/PageContent";
+import Spacer from "@/components/Spacer";
 
-export type AddLogModalOptions = {
+export type AddSheetModalOptions = {
   open?: boolean;
   onClose?: () => void;
   onSubmit?: (data: FieldValues) => void;
 };
 
-const AddLogModal = ({ open, onClose, onSubmit }: AddLogModalOptions) => {
+const AddSheetModal = ({ open, onClose, onSubmit }: AddSheetModalOptions) => {
   const { t } = useTranslation();
 
   const { register, handleSubmit, reset } = useForm({
-    defaultValues: { name: "", logDate: new Date() },
+    defaultValues: { name: "", desc: "", logDate: new Date() },
   });
 
   const onSubmitClick = () => {
@@ -31,10 +30,11 @@ const AddLogModal = ({ open, onClose, onSubmit }: AddLogModalOptions) => {
   };
 
   return (
-    <Modal title={t("add log")} open={open} onClose={() => onClose?.()}>
+    <Modal title={t("add sheet")} open={open} onClose={() => onClose?.()}>
       <PageContent>
         <Form>
           <Input formRegister={register("name")} placeholder={t("name")} />
+          <Input formRegister={register("desc")} placeholder={t("desc")} />
         </Form>
         <Spacer />
         <Button onClick={onSubmitClick}>{t("add")}</Button>
@@ -43,4 +43,4 @@ const AddLogModal = ({ open, onClose, onSubmit }: AddLogModalOptions) => {
   );
 };
 
-export default AddLogModal;
+export default AddSheetModal;

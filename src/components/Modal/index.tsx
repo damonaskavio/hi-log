@@ -30,13 +30,12 @@ const Modal = ({
 
   return createPortal(
     <dialog ref={dialogRef} className="modal-root">
-      <PageHeader>
+      <PageHeader
+        rightMenu={[
+          <IconButton onClick={() => onClose?.()} icon={<IoClose />} />,
+        ]}
+      >
         {title}
-        <IconButton
-          onClick={() => onClose?.()}
-          icon={<IoClose />}
-          className="close-icon"
-        />
       </PageHeader>
 
       {children}

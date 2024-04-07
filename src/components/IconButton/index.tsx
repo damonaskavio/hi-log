@@ -1,5 +1,6 @@
 import { PropsWithChildren, cloneElement } from "react";
 import "./index.css";
+import useClickEvent from "@/hooks/useClickEvent";
 
 export type IconButtonOptions = {
   className?: string;
@@ -12,8 +13,14 @@ const IconButton = ({
   icon,
   onClick,
 }: PropsWithChildren<IconButtonOptions>) => {
+  const [active, clickEvent] = useClickEvent(onClick);
+
   return (
-    <div className={`icon-button-root ${className}`} onClick={() => onClick?.()}>
+    <div
+      data-active={active}
+      className={`icon-button-root ${className}`}
+      {...clickEvent}
+    >
       {cloneElement(icon, { size: 30, color: "inherit" })}
     </div>
   );

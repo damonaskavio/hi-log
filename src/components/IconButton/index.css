@@ -6,9 +6,16 @@
 
   animation: fadeIn 0.3s;
 
-  transition: height 0.25s, border-color 0.25s, color 0.25s;
+  transition: filter var(--ts-fast), height var(--ts-fast),
+    border-color var(--ts-fast), color var(--ts-fast);
 
   &:active {
+    color: var(--clr-pri-400);
+    filter: drop-shadow(0 0 1em hsl(from var(--clr-neu-100) h s l / 0.3));
+  }
+
+  &[data-active="true"] {
+    border-color: var(--clr-pri-400);
     color: var(--clr-pri-400);
     filter: drop-shadow(0 0 1em hsl(from var(--clr-neu-100) h s l / 0.3));
   }
