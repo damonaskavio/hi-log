@@ -1,4 +1,7 @@
 .select-root {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
   height: 40px;
   border-radius: var(--radius-xl);
   padding: var(--sp-md);
@@ -9,11 +12,40 @@
   outline-color: transparent;
   transition: outline-color var(--ts-normal);
   background-color: var(--clr-neu-800);
+  color: var(--clr-neu-100);
 
+  &[data-focused="true"],
   &:focus {
     outline-width: 2px;
     outline-style: solid;
     outline-color: var(--clr-pri-400);
     color: var(--clr-pri-400);
+  }
+
+  position: relative;
+
+  select {
+    color: inherit;
+    background-color: transparent;
+    border: none;
+    padding-left: var(--sp-xl);
+    border-radius: var(--radius-xl);
+    top: 0;
+    left: 0;
+    position: absolute;
+    height: 100%;
+    width: 100%;
+    outline: none;
+    appearance: none;
+  }
+
+  option {
+    color: var(--clr-neu-100);
+    background-color: var(--clr-neu-800);
+
+    &:checked {
+      color: var(--clr-pri-400);
+      font-weight: var(--fw-semi-bold);
+    }
   }
 }

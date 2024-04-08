@@ -6,6 +6,8 @@ export type Record = {
   name: string;
   desc?: string;
   updatedAt: Date;
+  recordDate?: Date;
+  recordTime?: string;
   tags?: string[];
   amount: number;
   currency: string;
@@ -29,6 +31,8 @@ export interface RecordSlice {
     desc?: string;
     amount: number;
     currency: string;
+    recordDate: Date;
+    recordTime: string;
   }) => void;
   getRecord: ({
     logId,
@@ -38,7 +42,14 @@ export interface RecordSlice {
     logId: string;
     sheetId: string;
     recordId: string;
-  }) => Record | undefined;
+  }) => Record | null;
+  getRecords: ({
+    logId,
+    sheetId,
+  }: {
+    logId: string;
+    sheetId: string;
+  }) => Record[];
   resetRecords: () => void;
 }
 
@@ -47,9 +58,18 @@ const createRecordSlice: StateCreator<RecordSlice, [], [], RecordSlice> = (
   get
 ) => ({
   records: {},
-  addRecord: ({ logId, sheetId, name, amount, currency, desc }) => {
+  addRecord: ({
+    logId,
+    sheetId,
+    name,
+    amount,
+    currency,
+    desc,
+    recordDate,
+    recordTime,
+  }) => {
     let records = get().records;
-    const sheetRecords = [...records[`${logId}_${sheetId}`]] || [];
+    const sheetRecords = [...(records[`${logId}_${sheetId}`] || [])];
     const uuid = getUniqueUUID(
       sheetRecords.map((sr) => ({ id: sr.id })),
       "id"
@@ -62,6 +82,8 @@ const createRecordSlice: StateCreator<RecordSlice, [], [], RecordSlice> = (
       desc,
       id: uuid,
       updatedAt: new Date(),
+      recordDate,
+      recordTime,
     });
 
     records = { ...records, [`${logId}_${sheetId}`]: sheetRecords };
@@ -69,9 +91,14 @@ const createRecordSlice: StateCreator<RecordSlice, [], [], RecordSlice> = (
     set(() => ({ records }));
   },
   getRecord: ({ logId, sheetId, recordId }) => {
-    return get().records[`${logId}_${sheetId}`].find(
-      (record) => record.id === recordId
+    return (
+      get().records[`${logId}_${sheetId}`].find(
+        (record) => record.id === recordId
+      ) || null
     );
+  },
+  getRecords: ({ logId, sheetId }) => {
+    return get().records[`${logId}_${sheetId}`] || [];
   },
   resetRecords: () => set(() => ({ records: {} })),
 });

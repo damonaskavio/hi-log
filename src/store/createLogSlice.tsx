@@ -10,11 +10,11 @@ export type Log = {
 export interface LogSlice {
   // States
   logs: Log[];
-  selectedLog: Log | undefined;
+  selectedLog: Log | null;
   // Actions
   addLog: (log: Log) => void;
   setSelectedLog: (log?: Log) => void;
-  getLog: (id: string) => Log | undefined;
+  getLog: (id: string) => Log | null;
   resetLogs: () => void;
 }
 
@@ -23,7 +23,7 @@ const createLogSlice: StateCreator<LogSlice, [], [], LogSlice> = (
   get
 ) => ({
   logs: [],
-  selectedLog: undefined,
+  selectedLog: null,
   addLog: (log) =>
     set((state) => ({
       logs: [log, ...state.logs],
@@ -31,7 +31,7 @@ const createLogSlice: StateCreator<LogSlice, [], [], LogSlice> = (
   setSelectedLog: (log) => set(() => ({ selectedLog: log })),
   getLog: (id) => {
     const logs = get().logs;
-    return logs.find((l) => l.id === id);
+    return logs.find((l) => l.id === id) || null;
   },
   resetLogs: () => set(() => ({ logs: [] })),
 });

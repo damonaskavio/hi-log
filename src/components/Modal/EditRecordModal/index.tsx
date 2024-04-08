@@ -11,25 +11,39 @@ import "./index.css";
 import Select from "@/components/Select";
 import CurrencySymbolMap from "@/utils/currency";
 import DateTimePicker from "@/components/DateTimePicker";
+import { Record } from "@/store/createRecordSlice";
+import { useEffect } from "react";
 
-export type AddRecordModalOptions = {
+export type EditRecordModalOptions = {
   open?: boolean;
   onClose?: () => void;
   onSubmit?: (data: FieldValues) => void;
+  record?: Record;
 };
 
-const AddRecordModal = ({ open, onClose, onSubmit }: AddRecordModalOptions) => {
+const EditRecordModal = ({
+  open,
+  onClose,
+  onSubmit,
+  record,
+}: EditRecordModalOptions) => {
   const { t } = useTranslation();
 
-  const { register, handleSubmit, reset } = useForm({
+  const { register, handleSubmit, reset } = useForm<{
+    name: string;
+    desc: string;
+    recordDate: Date | null;
+    recordTime: string | null;
+    currency: string;
+    amount: number;
+  }>({
     defaultValues: {
       name: "",
       desc: "",
+      recordDate: null,
+      recordTime: null,
       currency: "MYR",
       amount: 0,
-      logDate: new Date(),
-      recordDate: undefined,
-      recordTime: undefined,
     },
   });
 
@@ -41,19 +55,39 @@ const AddRecordModal = ({ open, onClose, onSubmit }: AddRecordModalOptions) => {
     })();
   };
 
+  useEffect(() => {
+    if (record) {
+      const { name, desc, recordDate, recordTime, currency, amount } = record;
+      reset({
+        name,
+        desc,
+        recordDate: recordDate || null,
+        recordTime: recordTime || null,
+        currency,
+        amount,
+      });
+    } else {
+      reset();
+    }
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [record]);
+
   return (
-    <Modal title={t("add record")} open={open} onClose={() => onClose?.()}>
+    <Modal title={t("edit record")} open={open} onClose={() => onClose?.()}>
       <PageContent>
         <Form>
           <Input formRegister={register("name")} placeholder={t("name")} />
           <Input formRegister={register("desc")} placeholder={t("desc")} />
           <DateTimePicker
             formRegister={register("recordDate")}
+            // formWatch={watch}
             placeholder={t("record date")}
             type="date"
           />
           <DateTimePicker
             formRegister={register("recordTime")}
+            // formWatch={watch}
             placeholder={t("record time")}
             type="time"
           />
@@ -86,10 +120,10 @@ const AddRecordModal = ({ open, onClose, onSubmit }: AddRecordModalOptions) => {
           </div>
         </Form>
         <Spacer />
-        <Button onClick={onSubmitClick}>{t("add")}</Button>
+        <Button onClick={onSubmitClick}>{t("save")}</Button>
       </PageContent>
     </Modal>
   );
 };
 
-export default AddRecordModal;
+export default EditRecordModal;

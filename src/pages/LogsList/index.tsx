@@ -12,6 +12,7 @@ import { useTranslation } from "react-i18next";
 import { IoAddCircleOutline } from "react-icons/io5";
 import { useShallow } from "zustand/react/shallow";
 import "./index.css";
+import EmptyMessage from "@/components/EmptyMessage";
 
 const LogsList = () => {
   const { t } = useTranslation();
@@ -43,11 +44,7 @@ const LogsList = () => {
   return (
     <div>
       <PageHeader>{t("logs list")}</PageHeader>
-      {isLogsEmpty && (
-        <div className="empty-msg">
-          <p>{t("logs empty")}</p>
-        </div>
-      )}
+      {isLogsEmpty && <EmptyMessage msgKey="logs empty" />}
 
       <PageContent>
         {!isLogsEmpty && (

@@ -5,10 +5,10 @@
   background-color: var(--clr-neu-800);
   padding: var(--sp-lg);
 
-  animation: fadeIn 0.5s, rightSlideIn 0.5s;
+  animation: fadeIn var(--ts-slow), rightSlideIn var(--ts-slow);
 
-  transition: transform var(--ts-fast), background-color var(--ts-fast),
-    color var(--ts-fast);
+  transition: outline var(--ts-fast), transform var(--ts-fast),
+    background-color var(--ts-fast), color var(--ts-fast);
 
   .name {
     font-weight: var(--fw-semi-bold);
@@ -25,7 +25,7 @@
   }
 
   &[data-selected="true"] {
-    border: 2px solid var(--clr-pri-400);
+    outline: 2px solid var(--clr-pri-400);
     color: var(--clr-pri-400);
   }
 }

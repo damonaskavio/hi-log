@@ -5,23 +5,28 @@ import useClickEvent from "@/hooks/useClickEvent";
 export type IconButtonOptions = {
   className?: string;
   icon: JSX.Element;
-  onClick?: () => void;
+  onClick?: (e: React.MouseEvent<HTMLElement, MouseEvent>) => void;
+  size?: number;
+  stopPropagation?: boolean;
 };
 
 const IconButton = ({
   className,
   icon,
   onClick,
+  size = 30,
+  stopPropagation = false,
 }: PropsWithChildren<IconButtonOptions>) => {
-  const [active, clickEvent] = useClickEvent(onClick);
+  const [active, clickEvent] = useClickEvent(onClick, stopPropagation);
 
   return (
     <div
       data-active={active}
       className={`icon-button-root ${className}`}
       {...clickEvent}
+      style={{ height: size, width: size }}
     >
-      {cloneElement(icon, { size: 30, color: "inherit" })}
+      {cloneElement(icon, { size, color: "inherit" })}
     </div>
   );
 };

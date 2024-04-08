@@ -1,5 +1,6 @@
-import { SelectHTMLAttributes } from "react";
+import { SelectHTMLAttributes, useRef, useState } from "react";
 import { UseFormRegisterReturn } from "react-hook-form";
+import { IoIosArrowDown, IoIosArrowUp } from "react-icons/io";
 import "./index.css";
 
 type Option = {
@@ -18,16 +19,47 @@ const Select = ({
   options,
   ...selectOptions
 }: SelectOptions) => {
+  const rootRef = useRef<HTMLDivElement>(null);
+  const [focused, setFocused] = useState(false);
+
+  const handleArrowChange = () => {
+    setFocused(!focused);
+  };
   return (
-    <select
-      {...selectOptions}
+    <div
+      ref={rootRef}
       className={`select-root ${className}`}
-      {...(formRegister || {})}
+      onBlur={() => {
+        if (focused) {
+          handleArrowChange();
+        }
+      }}
+      data-focused={focused}
+      tabIndex={0}
     >
-      {options.map(({ value, label }) => (
-        <option value={value}>{label}</option>
-      ))}
-    </select>
+      <select
+        onClick={() => {
+          handleArrowChange();
+        }}
+        {...selectOptions}
+        {...(formRegister || {})}
+        tabIndex={-1}
+      >
+        {options.map(({ value, label }) => (
+          <option
+            key={value}
+            value={value}
+            onClick={() => {
+              handleArrowChange();
+            }}
+          >
+            {label}
+          </option>
+        ))}
+      </select>
+
+      {focused ? <IoIosArrowUp /> : <IoIosArrowDown />}
+    </div>
   );
 };
 

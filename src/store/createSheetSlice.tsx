@@ -21,7 +21,7 @@ export type SheetList = {
 
 export interface SheetSlice {
   // States
-  selectedSheet: Sheet | undefined;
+  selectedSheet: Sheet | null;
   sheets: SheetList;
   // Actions
   addSheet: ({
@@ -36,8 +36,8 @@ export interface SheetSlice {
     desc?: string;
   }) => void;
   setSelectedSheet: (sheet?: Sheet) => void;
-  getSheet: (logId: string, sheetId: string) => Sheet | undefined;
-  getLogSheets: (logId: string) => Sheet[] | undefined;
+  getSheet: (logId: string, sheetId: string) => Sheet | null;
+  getLogSheets: (logId: string) => Sheet[] | null;
   getLatestLogSheet: (logId: string) => Sheet;
   resetSheets: () => void;
 }
@@ -46,11 +46,11 @@ const createSheetSlice: StateCreator<SheetSlice, [], [], SheetSlice> = (
   set,
   get
 ) => ({
-  selectedSheet: undefined,
+  selectedSheet: null,
   sheets: {},
   addSheet: ({ logId, name, tags, desc }) => {
     let sheets = get().sheets;
-    const logSheets = [...sheets[logId]] || [];
+    const logSheets = [...(sheets[logId] || [])];
     const sheetIds = logSheets.map((ls) => ({ id: ls.id }));
 
     const uuid = getUniqueUUID(sheetIds, "id");
@@ -74,10 +74,10 @@ const createSheetSlice: StateCreator<SheetSlice, [], [], SheetSlice> = (
     const logSheets = get().sheets[logId];
 
     if (logSheets) {
-      return logSheets.find((ls) => ls.id === sheetId);
+      return logSheets.find((ls) => ls.id === sheetId) || null;
     }
 
-    return undefined;
+    return null;
   },
   getLogSheets: (logId) => {
     return get().sheets[logId] || [];

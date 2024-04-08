@@ -1,0 +1,12 @@
+.currency-container {
+  display: flex;
+  column-gap: var(--sp-md);
+
+  .currency {
+    width: 100px;
+  }
+
+  .amount {
+    flex: 1;
+  }
+}

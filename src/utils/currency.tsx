@@ -1,4 +1,4 @@
-const CurrencySymbolMap = {
+const CurrencySymbolMap: { [key: string]: string } = {
   USD: "$",
   CAD: "CA$",
   EUR: "€",

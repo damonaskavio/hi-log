@@ -6,6 +6,8 @@ import Card from "..";
 import "./index.css";
 import { useNavigate } from "react-router-dom";
 import useClickEvent from "@/hooks/useClickEvent";
+import dayjs from "dayjs";
+import Constants from "@/utils/constant";
 
 type SheetCardOptions = {
   data: Sheet;
@@ -45,7 +47,7 @@ const SheetCard = ({ data }: SheetCardOptions) => {
       </div>
 
       <div className="date">
-        <p>{updatedAt.toLocaleString()}</p>
+        <p>{dayjs(updatedAt).format(Constants.datetime_format)}</p>
         <TbRefresh />
       </div>
     </Card>

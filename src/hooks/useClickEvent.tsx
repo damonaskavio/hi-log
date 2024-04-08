@@ -1,6 +1,18 @@
 import { useEffect, useState } from "react";
 
-const useClickEvent = (onClick?: () => void) => {
+type ClickEvent = {
+  onClick?: (e?: React.MouseEvent<HTMLElement, MouseEvent>) => void;
+  onPointerDown?: (e?: React.PointerEvent<HTMLElement>) => void;
+  onPointerUp?: (e?: React.PointerEvent<HTMLElement>) => void;
+  onMouseUp?: (e?: React.MouseEvent<HTMLElement, MouseEvent>) => void;
+  onTouchEnd?: (e?: React.TouchEvent<HTMLElement>) => void;
+  onBlur?: (e?: React.FocusEvent<HTMLElement>) => void;
+};
+
+const useClickEvent = (
+  onClick?: (e: React.MouseEvent<HTMLElement, MouseEvent>) => void,
+  stopPropagation?: boolean
+) => {
   const [active, setActive] = useState(false);
 
   const listener = () => {
@@ -23,23 +35,54 @@ const useClickEvent = (onClick?: () => void) => {
     };
   }, []);
 
-  const clickEvent = {
-    onClick: () => {
-      activate();
+  const clickEvent: ClickEvent = {
+    onClick: (e) => {
+      if (e) {
+        if (stopPropagation) {
+          e.stopPropagation();
+        }
 
-      setTimeout(() => {
-        onClick?.();
-        deactivate?.();
-      }, 100);
+        activate();
+
+        setTimeout(() => {
+          onClick?.(e);
+          deactivate?.();
+        }, 100);
+      }
     },
-    onPointerDown: activate,
-    onPointerUp: deactivate,
-    onMouseUp: deactivate,
-    onTouchEnd: deactivate,
-    onBlur: deactivate,
+    onPointerDown: (e) => {
+      if (e) {
+        e.stopPropagation();
+      }
+      activate();
+    },
+    onPointerUp: (e) => {
+      if (e) {
+        e.stopPropagation();
+      }
+      deactivate();
+    },
+    onMouseUp: (e) => {
+      if (e) {
+        e.stopPropagation();
+      }
+      deactivate();
+    },
+    onTouchEnd: (e) => {
+      if (e) {
+        e.stopPropagation();
+      }
+      deactivate();
+    },
+    onBlur: (e) => {
+      if (e) {
+        e.stopPropagation();
+      }
+      deactivate();
+    },
   };
 
-  return [active, clickEvent] as const;
+  return [active, onClick ? clickEvent : {}] as const;
 };
 
 export default useClickEvent;
