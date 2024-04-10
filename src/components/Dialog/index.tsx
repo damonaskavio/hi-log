@@ -1,19 +1,20 @@
 import { PropsWithChildren, useEffect, useRef } from "react";
 import { createPortal } from "react-dom";
 import "./index.css";
+import classNames from "classnames";
 
-export type ModalOptions = {
-  title?: string;
+export type DialogOptions = {
   open?: boolean;
   onClose?: () => void;
+  className?: string;
 };
 
 const Dialog = ({
   children,
-  // title = "",
   open,
   onClose,
-}: PropsWithChildren<ModalOptions>) => {
+  className,
+}: PropsWithChildren<DialogOptions>) => {
   const dialogRef = useRef<HTMLDialogElement>(null);
 
   useEffect(() => {
@@ -26,8 +27,18 @@ const Dialog = ({
   }, [open]);
 
   return createPortal(
-    <dialog ref={dialogRef} className="dialog-root" onClick={onClose}>
-      {children}
+    <dialog
+      ref={dialogRef}
+      className={classNames("dialog-root", className)}
+      onClick={onClose}
+    >
+      <div
+        onClick={(e) => {
+          e.stopPropagation();
+        }}
+      >
+        {children}
+      </div>
     </dialog>,
     document.getElementById("root")!
   );

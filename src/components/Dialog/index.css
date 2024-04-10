@@ -2,7 +2,12 @@
   outline: none;
   border: none;
 
-  margin: 0;
-
+  margin: auto;
   color: inherit;
+
+  border-radius: var(--radius-md);
+
+  &::backdrop {
+    background-color: hsla(0, 0%, 0%, 0.6);
+  }
 }

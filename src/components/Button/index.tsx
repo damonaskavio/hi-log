@@ -1,6 +1,7 @@
 import useClickEvent from "@/hooks/useClickEvent";
 import { PropsWithChildren, cloneElement } from "react";
 import "./index.css";
+import classNames from "classnames";
 
 export type ButtonOptions = {
   className?: string;
@@ -22,7 +23,7 @@ const Button = ({
     <div
       data-active={active}
       data-compact={compact}
-      className={`button-root ${className}`}
+      className={classNames("button-root", className)}
       {...clickEvent}
     >
       {icon && cloneElement(icon, { size: 30 })}

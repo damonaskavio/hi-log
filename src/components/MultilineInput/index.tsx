@@ -1,6 +1,7 @@
 import { TextareaHTMLAttributes } from "react";
 import { UseFormRegisterReturn } from "react-hook-form";
 import "./index.css";
+import classNames from "classnames";
 
 export interface MultilineInputOptions
   extends TextareaHTMLAttributes<HTMLTextAreaElement> {
@@ -16,7 +17,7 @@ const MultilineInput = ({
   return (
     <textarea
       {...multilineInput}
-      className={`multiline-input-root ${className}`}
+      className={classNames("multiline-input-root", className)}
       placeholder={placeholder}
       {...(formRegister || {})}
     />

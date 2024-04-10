@@ -2,6 +2,7 @@ import { SelectHTMLAttributes, useRef, useState } from "react";
 import { UseFormRegisterReturn } from "react-hook-form";
 import { IoIosArrowDown, IoIosArrowUp } from "react-icons/io";
 import "./index.css";
+import classNames from "classnames";
 
 type Option = {
   value: string;
@@ -28,7 +29,7 @@ const Select = ({
   return (
     <div
       ref={rootRef}
-      className={`select-root ${className}`}
+      className={classNames("select-root", className)}
       onBlur={() => {
         if (focused) {
           handleArrowChange();

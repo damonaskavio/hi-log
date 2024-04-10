@@ -1,0 +1,22 @@
+.menu-dialog-root {
+  background-color: transparent;
+}
+
+.menu-dialog {
+  border-radius: var(--radius-sm);
+  background-color: var(--clr-neu-900);
+  width: 200px;
+
+  .option {
+    text-align: center;
+    padding: var(--sp-md);
+
+    &:active {
+      background-color: var(--clr-pri-400);
+    }
+
+    &:nth-child(n + 2) {
+      border-top: 1px solid var(--clr-neu-700);
+    }
+  }
+}

@@ -12,6 +12,8 @@ const en_US = {
   "edit log": "Edit Log",
   "edit sheet": "Edit Sheet",
   "edit record": "Edit Record",
+  "choose media": "Choose from Gallery",
+  "capture media": "Take a Photo",
   //
   add: "Add",
   name: "Name",

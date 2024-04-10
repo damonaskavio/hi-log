@@ -4,6 +4,7 @@ import { IoTimeOutline } from "react-icons/io5";
 import { TbCalendar, TbCalendarTime } from "react-icons/tb";
 
 import "./index.css";
+import classNames from "classnames";
 
 export interface DateTimePickerOptions
   extends InputHTMLAttributes<HTMLInputElement> {
@@ -40,7 +41,7 @@ const DateTimePicker = ({
     <div className="date-picker-root">
       <input
         {...dateTimePickerOptions}
-        className={`date-picker-input ${className}`}
+        className={classNames("date-picker-input", className)}
         placeholder={placeholder}
         {...(formRegister || {})}
         onChange={(...e) => {

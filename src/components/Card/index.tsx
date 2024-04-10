@@ -1,6 +1,7 @@
 import { PropsWithChildren } from "react";
 import "./index.css";
 import useClickEvent from "@/hooks/useClickEvent";
+import classNames from "classnames";
 
 export type CardOptions = {
   className?: string;
@@ -22,7 +23,7 @@ const Card = ({
     <div
       data-selected={selected}
       data-active={active}
-      className={`card-root ${className}`}
+      className={classNames("card-root", className)}
       {...clickEvent}
     >
       {children}
