@@ -20,18 +20,26 @@ const SheetRecords = () => {
   const { t } = useTranslation();
   const [addModalOpen, setAddModalOpen] = useState(false);
   const [editRecord, setEditRecord] = useState<Record>();
+  const [selectedRecords, setSelectedRecords] = useState<string[]>([]);
   const { setRightMenu } = useSheetLayoutContext();
 
-  const [selectedLog, selectedSheet, records, getRecords, addRecord] =
-    useHiLogStore(
-      useShallow((state) => [
-        state.selectedLog,
-        state.selectedSheet,
-        state.records,
-        state.getRecords,
-        state.addRecord,
-      ])
-    );
+  const [
+    selectedLog,
+    selectedSheet,
+    records,
+    getRecords,
+    addRecord,
+    updateRecord,
+  ] = useHiLogStore(
+    useShallow((state) => [
+      state.selectedLog,
+      state.selectedSheet,
+      state.records,
+      state.getRecords,
+      state.addRecord,
+      state.updateRecord,
+    ])
+  );
 
   const sheetRecords =
     selectedLog && selectedSheet
@@ -48,9 +56,9 @@ const SheetRecords = () => {
   };
 
   const handleAddRecord = (values: FieldValues) => {
-    const { name, amount, currency, desc, recordDate, recordTime } = values;
-
     if (selectedLog && selectedSheet) {
+      const { name, amount, currency, desc, recordDate, recordTime } = values;
+
       addRecord({
         logId: selectedLog.id,
         sheetId: selectedSheet.id,
@@ -72,10 +80,34 @@ const SheetRecords = () => {
     setEditRecord(record);
   };
 
-  const handleEditRecord = () => {};
+  const handleEditRecord = (values: FieldValues) => {
+    if (selectedLog && selectedSheet && editRecord) {
+      const { name, amount, currency, desc, recordDate, recordTime } = values;
+
+      updateRecord({
+        logId: selectedLog.id,
+        sheetId: selectedSheet.id,
+        recordId: editRecord.id,
+        name,
+        amount,
+        currency,
+        desc,
+        recordDate,
+        recordTime,
+      });
+    }
+  };
 
   const handleEditModalClose = () => {
     setEditRecord(undefined);
+  };
+
+  const handleRecordSelected = (recordId: string) => {
+    setSelectedRecords([...selectedRecords, recordId]);
+  };
+
+  const handleRecordUnselected = (recordId: string) => {
+    setSelectedRecords(selectedRecords.filter((r) => r !== recordId));
   };
 
   useEffect(() => {
@@ -103,6 +135,9 @@ const SheetRecords = () => {
               key={record.id}
               data={record}
               onEdit={handleEditRecordOpen}
+              selected={selectedRecords.includes(record.id)}
+              onSelected={handleRecordSelected}
+              onUnselected={handleRecordUnselected}
             />
           ))}
         </div>

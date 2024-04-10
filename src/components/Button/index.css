@@ -2,7 +2,7 @@
   user-select: none;
   margin: auto;
   margin-top: var(--sp-xl);
-  border: 3px solid var(--clr-neu-100);
+  border: 2px solid var(--clr-neu-100);
   border-radius: var(--radius-lg);
   height: 150px;
   width: 150px;

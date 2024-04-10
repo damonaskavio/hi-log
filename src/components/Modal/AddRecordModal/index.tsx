@@ -11,6 +11,7 @@ import "./index.css";
 import Select from "@/components/Select";
 import CurrencySymbolMap from "@/utils/currency";
 import DateTimePicker from "@/components/DateTimePicker";
+import MultilineInput from "@/components/MultilineInput";
 
 export type AddRecordModalOptions = {
   open?: boolean;
@@ -46,7 +47,10 @@ const AddRecordModal = ({ open, onClose, onSubmit }: AddRecordModalOptions) => {
       <PageContent>
         <Form>
           <Input formRegister={register("name")} placeholder={t("name")} />
-          <Input formRegister={register("desc")} placeholder={t("desc")} />
+          <MultilineInput
+            formRegister={register("desc")}
+            placeholder={t("desc")}
+          />
           <DateTimePicker
             formRegister={register("recordDate")}
             placeholder={t("record date")}

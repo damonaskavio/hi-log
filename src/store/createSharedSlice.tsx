@@ -6,7 +6,7 @@ import { RecordSlice } from "./createRecordSlice";
 import { SheetSlice } from "./createSheetSlice";
 
 export interface SharedSlice {
-  createLog: ({ name, tags }: { name: string; tags?: string[] }) => void;
+  createLog: (args: { name: string; tags?: string[] }) => void;
   resetAll: () => void;
 }
 

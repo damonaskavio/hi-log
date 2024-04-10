@@ -16,7 +16,7 @@ const Button = ({
   onClick,
   compact = true,
 }: PropsWithChildren<ButtonOptions>) => {
-  const [active, clickEvent] = useClickEvent(onClick);
+  const [active, clickEvent] = useClickEvent({ onClick });
 
   return (
     <div

@@ -21,10 +21,7 @@ export interface RecordSlice {
   // States
   records: RecordList;
   // Actions
-  addRecord: ({
-    logId,
-    sheetId,
-  }: {
+  addRecord: (args: {
     logId: string;
     sheetId: string;
     name: string;
@@ -34,22 +31,23 @@ export interface RecordSlice {
     recordDate: Date;
     recordTime: string;
   }) => void;
-  getRecord: ({
-    logId,
-    sheetId,
-    recordId,
-  }: {
+  updateRecord: (args: {
+    logId: string;
+    sheetId: string;
+    recordId: string;
+    name: string;
+    desc?: string;
+    amount: number;
+    currency: string;
+    recordDate: Date;
+    recordTime: string;
+  }) => void;
+  getRecord: (args: {
     logId: string;
     sheetId: string;
     recordId: string;
   }) => Record | null;
-  getRecords: ({
-    logId,
-    sheetId,
-  }: {
-    logId: string;
-    sheetId: string;
-  }) => Record[];
+  getRecords: (args: { logId: string; sheetId: string }) => Record[];
   resetRecords: () => void;
 }
 
@@ -89,6 +87,40 @@ const createRecordSlice: StateCreator<RecordSlice, [], [], RecordSlice> = (
     records = { ...records, [`${logId}_${sheetId}`]: sheetRecords };
 
     set(() => ({ records }));
+  },
+  updateRecord: ({
+    logId,
+    sheetId,
+    recordId,
+    name,
+    amount,
+    currency,
+    desc,
+    recordDate,
+    recordTime,
+  }) => {
+    let records = get().records;
+    const sheetRecords = [...(records[`${logId}_${sheetId}`] || [])];
+
+    const recordIndex = sheetRecords.findIndex((r) => r.id === recordId);
+
+    if (recordIndex > -1) {
+      const record = sheetRecords[recordIndex];
+      sheetRecords[recordIndex] = {
+        ...record,
+        name,
+        amount,
+        currency,
+        desc,
+        recordDate,
+        recordTime,
+        updatedAt: new Date(),
+      };
+
+      records = { ...records, [`${logId}_${sheetId}`]: sheetRecords };
+
+      set(() => ({ records }));
+    }
   },
   getRecord: ({ logId, sheetId, recordId }) => {
     return (

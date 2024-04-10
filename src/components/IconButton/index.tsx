@@ -17,7 +17,7 @@ const IconButton = ({
   size = 30,
   stopPropagation = false,
 }: PropsWithChildren<IconButtonOptions>) => {
-  const [active, clickEvent] = useClickEvent(onClick, stopPropagation);
+  const [active, clickEvent] = useClickEvent({ onClick, stopPropagation });
 
   return (
     <div

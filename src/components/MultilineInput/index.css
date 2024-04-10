@@ -1,0 +1,19 @@
+.multiline-input-root {
+  height: 40px;
+  border-radius: var(--radius-xl);
+  padding: var(--sp-md);
+  padding-left: var(--sp-xl);
+  padding-right: var(--sp-xl);
+  border: none;
+  width: 100%;
+  outline-color: transparent;
+  transition: outline-color var(--ts-normal);
+  background-color: var(--clr-neu-800);
+
+  &:focus {
+    outline-width: 2px;
+    outline-style: solid;
+    outline-color: var(--clr-pri-400);
+    color: var(--clr-pri-400);
+  }
+}

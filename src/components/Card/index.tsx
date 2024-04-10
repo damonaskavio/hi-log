@@ -6,6 +6,7 @@ export type CardOptions = {
   className?: string;
   selected?: boolean;
   onClick?: () => void;
+  onLongPress?: () => void;
 };
 
 const Card = ({
@@ -13,8 +14,9 @@ const Card = ({
   className,
   children,
   onClick,
+  onLongPress,
 }: PropsWithChildren<CardOptions>) => {
-  const [active, clickEvent] = useClickEvent(onClick);
+  const [active, clickEvent] = useClickEvent({ onClick, onLongPress });
 
   return (
     <div

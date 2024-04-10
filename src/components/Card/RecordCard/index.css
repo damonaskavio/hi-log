@@ -25,6 +25,7 @@
     .header {
       flex-shrink: 0;
       display: flex;
+      column-gap: var(--sp-lg);
       justify-content: space-between;
       align-items: center;
 

@@ -13,6 +13,7 @@ import CurrencySymbolMap from "@/utils/currency";
 import DateTimePicker from "@/components/DateTimePicker";
 import { Record } from "@/store/createRecordSlice";
 import { useEffect } from "react";
+import MultilineInput from "@/components/MultilineInput";
 
 export type EditRecordModalOptions = {
   open?: boolean;
@@ -29,7 +30,7 @@ const EditRecordModal = ({
 }: EditRecordModalOptions) => {
   const { t } = useTranslation();
 
-  const { register, handleSubmit, reset } = useForm<{
+  const { register, handleSubmit, reset, watch } = useForm<{
     name: string;
     desc: string;
     recordDate: Date | null;
@@ -78,16 +79,19 @@ const EditRecordModal = ({
       <PageContent>
         <Form>
           <Input formRegister={register("name")} placeholder={t("name")} />
-          <Input formRegister={register("desc")} placeholder={t("desc")} />
+          <MultilineInput
+            formRegister={register("desc")}
+            placeholder={t("desc")}
+          />
           <DateTimePicker
             formRegister={register("recordDate")}
-            // formWatch={watch}
+            formWatch={watch}
             placeholder={t("record date")}
             type="date"
           />
           <DateTimePicker
             formRegister={register("recordTime")}
-            // formWatch={watch}
+            formWatch={watch}
             placeholder={t("record time")}
             type="time"
           />

@@ -33,7 +33,7 @@ const SheetCard = ({ data }: SheetCardOptions) => {
     }
   };
 
-  const [, { onClick }] = useClickEvent(handleClick);
+  const [, { onClick }] = useClickEvent({ onClick: handleClick });
 
   return (
     <Card

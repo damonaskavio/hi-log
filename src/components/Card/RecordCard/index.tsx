@@ -13,20 +13,40 @@ import "./index.css";
 type RecordCardOptions = {
   data: Record;
   onEdit: (record: Record) => void;
+  selected?: boolean;
+  onSelected: (recordId: string) => void;
+  onUnselected: (recordId: string) => void;
 };
 
-const RecordCard = ({ data, onEdit }: RecordCardOptions) => {
+const RecordCard = ({
+  data,
+  onEdit,
+  selected = false,
+  onSelected,
+  onUnselected,
+}: RecordCardOptions) => {
   const [loose, setLoose] = useState(false);
 
   const { name, desc, currency, amount, updatedAt, recordDate, recordTime } =
     data;
 
+  const onClick = () => {
+    if (selected) {
+      onUnselected(data.id);
+
+      return;
+    }
+
+    setLoose(!loose);
+  };
+
   return (
     <div className="record-card-root" data-loose={loose}>
       <Card
         className="record-card"
-        onClick={() => setLoose(!loose)}
-        selected={loose}
+        onClick={onClick}
+        onLongPress={() => onSelected(data.id)}
+        selected={selected}
       >
         <div className="content">
           <div className="header">

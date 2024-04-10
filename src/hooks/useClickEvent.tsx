@@ -1,7 +1,8 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 type ClickEvent = {
   onClick?: (e?: React.MouseEvent<HTMLElement, MouseEvent>) => void;
+
   onPointerDown?: (e?: React.PointerEvent<HTMLElement>) => void;
   onPointerUp?: (e?: React.PointerEvent<HTMLElement>) => void;
   onMouseUp?: (e?: React.MouseEvent<HTMLElement, MouseEvent>) => void;
@@ -9,10 +10,16 @@ type ClickEvent = {
   onBlur?: (e?: React.FocusEvent<HTMLElement>) => void;
 };
 
-const useClickEvent = (
-  onClick?: (e: React.MouseEvent<HTMLElement, MouseEvent>) => void,
-  stopPropagation?: boolean
-) => {
+const useClickEvent = ({
+  onClick,
+  onLongPress,
+  stopPropagation = false,
+}: {
+  onClick?: (e: React.MouseEvent<HTMLElement, MouseEvent>) => void;
+  onLongPress?: () => void;
+  stopPropagation?: boolean;
+}) => {
+  const timerRef = useRef<number | null>(null);
   const [active, setActive] = useState(false);
 
   const listener = () => {
@@ -22,10 +29,21 @@ const useClickEvent = (
   const activate = () => {
     window.addEventListener("pointerup", listener, { once: true });
     setActive(true);
+
+    if (onLongPress) {
+      timerRef.current = setTimeout(() => {
+        onLongPress();
+      }, 500);
+    }
   };
 
   const deactivate = () => {
     window.removeEventListener("pointerup", listener);
+
+    if (timerRef.current) {
+      clearTimeout(timerRef.current);
+      timerRef.current = null;
+    }
     setActive(false);
   };
 

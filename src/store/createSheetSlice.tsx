@@ -24,12 +24,7 @@ export interface SheetSlice {
   selectedSheet: Sheet | null;
   sheets: SheetList;
   // Actions
-  addSheet: ({
-    logId,
-    name,
-    tags,
-    desc,
-  }: {
+  addSheet: (args: {
     logId: string;
     name: string;
     tags?: string[];
