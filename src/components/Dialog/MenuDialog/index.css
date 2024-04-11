@@ -9,7 +9,7 @@
 
   .option {
     text-align: center;
-    padding: var(--sp-md);
+    padding: var(--sp-xl);
 
     &:active {
       background-color: var(--clr-pri-400);

@@ -9,8 +9,12 @@ const MenuDialog = ({ options, ...dialogOptions }: MenuDialogOptions) => {
   return (
     <Dialog {...dialogOptions} className="menu-dialog-root">
       <div className="menu-dialog">
-        {options.map(({ label, onClick }) => (
-          <div className="option" onClick={onClick}>
+        {options.map(({ label, onClick }, index) => (
+          <div
+            key={`menu_dialog_option_${index}`}
+            className="option"
+            onClick={onClick}
+          >
             {label}
           </div>
         ))}
