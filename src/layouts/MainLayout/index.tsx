@@ -1,24 +1,17 @@
 import LayoutHeader from "@/components/PageHeader/LayoutHeader";
-import { SheetLayoutContextType } from "@/hooks/useSheetLayoutContext";
+import { MainLayoutContextType } from "@/hooks/useMainLayoutContext";
 import { useState } from "react";
+import { BiSpreadsheet } from "react-icons/bi";
 import { FaImage } from "react-icons/fa6";
 import { LuFileSpreadsheet } from "react-icons/lu";
 import { TbListDetails } from "react-icons/tb";
-import {
-  Outlet,
-  matchPath,
-  useLocation,
-  useNavigate,
-  useParams,
-} from "react-router-dom";
+import { Outlet, matchPath, useLocation, useNavigate } from "react-router-dom";
 import "./index.css";
-import useHiLogStore from "@/store/useHiLogStore";
-import { useShallow } from "zustand/react/shallow";
 
 type NavigationTab = {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   [key: string]: {
-    path: string;
+    path: string | { pathname: string; search?: string };
     pattern: string;
     icon: JSX.Element;
     title: string;
@@ -41,34 +34,35 @@ const NavigationTab = ({
   );
 };
 
-const SheetLayout = () => {
+const MainLayout = () => {
   const { pathname } = useLocation();
-  const { logId, sheetId } = useParams();
   const [rightMenu, setRightMenu] = useState<JSX.Element[]>([]);
   const [leftMenu, setLeftMenu] = useState<JSX.Element[]>([]);
   const navigate = useNavigate();
 
-  const [setSelectedLog, setSelectedSheet] = useHiLogStore(
-    useShallow((state) => [state.setSelectedLog, state.setSelectedSheet])
-  );
-
   const tabs: NavigationTab = {
+    logs: {
+      icon: <BiSpreadsheet />,
+      path: `/logs`,
+      pattern: "/logs",
+      title: "logs list",
+    },
     list: {
       icon: <TbListDetails />,
-      path: `log/${logId}/sheets`,
-      pattern: "/log/:logId/sheets",
+      path: "/sheets",
+      pattern: "/sheets",
       title: "log sheets",
     },
     records: {
       icon: <LuFileSpreadsheet />,
-      path: `log/${logId}/sheet/${sheetId}`,
-      pattern: "/log/:logId/sheet/:sheetId",
+      path: "/sheet",
+      pattern: "/sheet",
       title: "sheet records",
     },
     media: {
       icon: <FaImage />,
-      path: `log/${logId}/sheet/${sheetId}/media`,
-      pattern: "/log/:logId/sheet/:sheetId/media",
+      path: "/media",
+      pattern: "/media",
       title: "sheet media",
     },
   };
@@ -113,20 +107,17 @@ const SheetLayout = () => {
         rightMenu={rightMenu}
         leftMenu={leftMenu}
         title={getTitle()}
-        onBack={() => {
-          setSelectedLog();
-          setSelectedSheet();
-        }}
       />
 
       <div className="content">
         <Outlet
           context={
-            { setRightMenu, setLeftMenu } satisfies SheetLayoutContextType
+            { setRightMenu, setLeftMenu } satisfies MainLayoutContextType
           }
         />
       </div>
       <div className="bottom-navigation">
+        {renderNavigation("logs")}
         {renderNavigation("list")}
         {renderNavigation("records")}
         {renderNavigation("media")}
@@ -135,4 +126,4 @@ const SheetLayout = () => {
   );
 };
 
-export default SheetLayout;
+export default MainLayout;

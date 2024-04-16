@@ -1,7 +1,8 @@
 .empty-msg {
   text-align: center;
-  padding: var(--sp-xl);
+  padding: var(--sp-xxl);
   margin-top: var(--sp-md);
 
   animation: fadeIn 0.3s, rightSlideIn 0.3s;
+  white-space: pre-wrap;
 }

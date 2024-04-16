@@ -33,6 +33,7 @@ const Dialog = ({
       onClick={onClose}
     >
       <div
+      className="dialog-container"
         onClick={(e) => {
           e.stopPropagation();
         }}

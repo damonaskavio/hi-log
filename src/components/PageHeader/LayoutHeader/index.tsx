@@ -32,7 +32,10 @@ const LayoutHeader = ({
   );
 
   return (
-    <PageHeader leftMenu={[<BackButton />, ...leftMenu]} rightMenu={rightMenu}>
+    <PageHeader
+      leftMenu={[...(onBack ? [<BackButton />] : []), ...leftMenu]}
+      rightMenu={rightMenu}
+    >
       {t(title || "")}
     </PageHeader>
   );

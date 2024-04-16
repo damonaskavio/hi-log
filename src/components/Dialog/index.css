@@ -7,7 +7,16 @@
 
   border-radius: var(--radius-md);
 
+  background-color: transparent;
+
+  width: 200px;
+
   &::backdrop {
     background-color: hsla(0, 0%, 0%, 0.6);
+  }
+
+  .dialog-container {
+    border-radius: var(--radius-sm);
+    background-color: var(--clr-neu-900);
   }
 }

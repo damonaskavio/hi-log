@@ -48,6 +48,11 @@ export interface RecordSlice {
     recordId: string;
   }) => Record | null;
   getRecords: (args: { logId: string; sheetId: string }) => Record[];
+  deleteRecords: (args: {
+    recordIds: string[];
+    logId: string;
+    sheetId: string;
+  }) => void;
   resetRecords: () => void;
 }
 
@@ -131,6 +136,18 @@ const createRecordSlice: StateCreator<RecordSlice, [], [], RecordSlice> = (
   },
   getRecords: ({ logId, sheetId }) => {
     return get().records[`${logId}_${sheetId}`] || [];
+  },
+  deleteRecords: ({ recordIds, logId, sheetId }) => {
+    let records = get().records;
+    let sheetRecords = [...(records[`${logId}_${sheetId}`] || [])];
+
+    sheetRecords = sheetRecords.filter(
+      (record) => !recordIds.includes(record.id)
+    );
+
+    records = { ...records, [`${logId}_${sheetId}`]: sheetRecords };
+
+    set(() => ({ records }));
   },
   resetRecords: () => set(() => ({ records: {} })),
 });

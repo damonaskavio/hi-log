@@ -1,19 +1,31 @@
+import useClickEvent from "@/hooks/useClickEvent";
 import { Sheet } from "@/store/createSheetSlice";
 import useHiLogStore from "@/store/useHiLogStore";
+import Constants from "@/utils/constant";
+import dayjs from "dayjs";
 import { TbRefresh } from "react-icons/tb";
+import { useNavigate } from "react-router-dom";
 import { useShallow } from "zustand/react/shallow";
 import Card from "..";
 import "./index.css";
-import { useNavigate } from "react-router-dom";
-import useClickEvent from "@/hooks/useClickEvent";
-import dayjs from "dayjs";
-import Constants from "@/utils/constant";
 
 type SheetCardOptions = {
   data: Sheet;
+  onEdit?: (sheet: Sheet) => void;
+  selected?: boolean;
+  onSelected?: (sheetId: string) => void;
+  onUnselected?: (sheetId: string) => void;
+  hasSelected?: boolean;
 };
 
-const SheetCard = ({ data }: SheetCardOptions) => {
+const SheetCard = ({
+  data,
+  onEdit,
+  selected,
+  onSelected,
+  onUnselected,
+  hasSelected,
+}: SheetCardOptions) => {
   const { name, desc, updatedAt, id } = data;
 
   const navigate = useNavigate();
@@ -27,9 +39,21 @@ const SheetCard = ({ data }: SheetCardOptions) => {
   );
 
   const handleClick = () => {
+    if (selected) {
+      onUnselected?.(data.id);
+
+      return;
+    }
+
+    if (hasSelected) {
+      onSelected?.(data.id);
+      return;
+    }
+
     if (selectedLog) {
       setSelectedSheet(data);
-      navigate(`/log/${selectedLog.id}/sheet/${id}`);
+
+      navigate("/sheet");
     }
   };
 
@@ -40,9 +64,13 @@ const SheetCard = ({ data }: SheetCardOptions) => {
       className="sheet-card-root"
       selected={!!selectedSheet && selectedSheet.id === id}
       onClick={onClick}
+      onLongPress={() => onSelected?.(data.id)}
+      title={name}
+      checked={selected}
+      editable={!selected && !hasSelected}
+      onEdit={() => onEdit?.(data)}
     >
       <div className="content">
-        <div>{name}</div>
         <div className="desc">{desc}</div>
       </div>
 

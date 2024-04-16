@@ -4,8 +4,12 @@
   }
 
   .media-container {
-    display: grid;
-    gap: var(--sp-lg);
-    grid-template-columns: repeat(3, 1fr);
+    overflow-y: auto;
+    max-height: 100%;
+
+    .media-virtualize {
+      width: 100%;
+      position: relative;
+    }
   }
 }

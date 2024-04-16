@@ -1,0 +1,30 @@
+.action-dialog-root {
+  width: 300px;
+}
+
+.action-dialog {
+  .action-title {
+    text-align: center;
+    padding: var(--sp-xxl);
+  }
+
+  .action-container {
+    display: flex;
+    justify-content: space-evenly;
+    border-top: 1px solid var(--clr-neu-700);
+
+    .option {
+      width: 100%;
+      text-align: center;
+      padding: var(--sp-xl);
+
+      &:active {
+        background-color: var(--clr-pri-400);
+      }
+
+      &:nth-child(n + 2) {
+        border-left: 1px solid var(--clr-neu-700);
+      }
+    }
+  }
+}

@@ -30,6 +30,12 @@ export interface SheetSlice {
     tags?: string[];
     desc?: string;
   }) => void;
+  updateSheet: (args: {
+    logId: string;
+    sheetId: string;
+    name?: string;
+    desc?: string;
+  }) => void;
   setSelectedSheet: (sheet?: Sheet) => void;
   getSheet: (logId: string, sheetId: string) => Sheet | null;
   getLogSheets: (logId: string) => Sheet[] | null;
@@ -61,6 +67,26 @@ const createSheetSlice: StateCreator<SheetSlice, [], [], SheetSlice> = (
     sheets = { ...sheets, [logId]: logSheets };
 
     set(() => ({ sheets }));
+  },
+  updateSheet: ({ logId, sheetId, name, desc }) => {
+    let sheets = get().sheets;
+    const logSheets = [...(sheets[logId] || [])];
+
+    const sheetIndex = logSheets.findIndex((sheet) => sheet.id === sheetId);
+
+    if (sheetIndex > -1) {
+      const sheet = logSheets[sheetIndex];
+      logSheets[sheetIndex] = {
+        ...sheet,
+        name: name || "",
+        desc,
+        updatedAt: new Date(),
+      };
+
+      sheets = { ...sheets, [logId]: logSheets };
+
+      set(() => ({ sheets }));
+    }
   },
   setSelectedSheet: (sheet) => {
     set(() => ({ selectedSheet: sheet }));

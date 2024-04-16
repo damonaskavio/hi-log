@@ -3,13 +3,13 @@
   max-height: 50px;
   display: flex;
   align-items: center;
-  margin-top: var(--sp-lg);
+  margin-top: var(--sp-md);
   margin-bottom: var(--sp-sm);
   font-size: var(--fs-lg);
   font-weight: var(--fw-bold);
 
-  padding-left: var(--sp-md);
-  padding-right: var(--sp-md);
+  padding-left: var(--sp-lg);
+  padding-right: var(--sp-lg);
 
   .page-header-title {
     text-align: center;
@@ -18,7 +18,7 @@
   .page-header-left {
     flex: 1;
     display: flex;
-    column-gap: var(--sp-xs);
+    column-gap: var(--sp-md);
     align-items: center;
     justify-content: flex-start;
   }
@@ -26,7 +26,7 @@
   .page-header-right {
     flex: 1;
     display: flex;
-    column-gap: var(--sp-xs);
+    column-gap: var(--sp-md);
     align-items: center;
     justify-content: flex-end;
   }

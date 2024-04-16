@@ -5,18 +5,33 @@ import "./index.css";
 import { TbRefresh } from "react-icons/tb";
 import dayjs from "dayjs";
 import Constants from "@/utils/constant";
+import useHiLogStore from "@/store/useHiLogStore";
 
-const LogCard = ({ log }: { log: Log }) => {
+const LogCard = ({
+  log,
+  selected = false,
+}: {
+  log: Log;
+  selected?: boolean;
+}) => {
   const { name, updatedAt } = log;
+
+  const [setSelectedLog, setSelectedSheet] = useHiLogStore((state) => [
+    state.setSelectedLog,
+    state.setSelectedSheet,
+  ]);
 
   const navigate = useNavigate();
 
   const onClick = () => {
-    navigate(`/log/${log.id}/sheets`);
+    setSelectedLog(log);
+    setSelectedSheet();
+
+    navigate("/sheets");
   };
 
   return (
-    <Card className="log-card-root" onClick={onClick}>
+    <Card className="log-card-root" onClick={onClick} selected={selected}>
       <div className="content">
         <p className="name">{name}</p>
       </div>

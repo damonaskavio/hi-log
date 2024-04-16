@@ -1,13 +1,13 @@
 import { Dispatch, SetStateAction } from "react";
 import { useOutletContext } from "react-router-dom";
 
-export type SheetLayoutContextType = {
+export type MainLayoutContextType = {
   setLeftMenu: Dispatch<SetStateAction<JSX.Element[]>>;
   setRightMenu: Dispatch<SetStateAction<JSX.Element[]>>;
 };
 
-const useSheetLayoutContext = () => {
-  return useOutletContext<SheetLayoutContextType>();
+const useMainLayoutContext = () => {
+  return useOutletContext<MainLayoutContextType>();
 };
 
-export default useSheetLayoutContext;
+export default useMainLayoutContext;

@@ -7,7 +7,7 @@ type MenuDialogOptions = DialogOptions & {
 
 const MenuDialog = ({ options, ...dialogOptions }: MenuDialogOptions) => {
   return (
-    <Dialog {...dialogOptions} className="menu-dialog-root">
+    <Dialog {...dialogOptions}>
       <div className="menu-dialog">
         {options.map(({ label, onClick }, index) => (
           <div

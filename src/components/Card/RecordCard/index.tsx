@@ -1,11 +1,9 @@
-import IconButton from "@/components/IconButton";
 import { Record } from "@/store/createRecordSlice";
 import Constants from "@/utils/constant";
 import CurrencySymbolMap from "@/utils/currency";
 import timeConvert from "@/utils/timeConvert";
 import dayjs from "dayjs";
 import { useState } from "react";
-import { MdEdit } from "react-icons/md";
 import { TbRefresh } from "react-icons/tb";
 import Card from "..";
 import "./index.css";
@@ -16,6 +14,7 @@ type RecordCardOptions = {
   selected?: boolean;
   onSelected: (recordId: string) => void;
   onUnselected: (recordId: string) => void;
+  hasSelected?: boolean;
 };
 
 const RecordCard = ({
@@ -24,16 +23,22 @@ const RecordCard = ({
   selected = false,
   onSelected,
   onUnselected,
+  hasSelected = false,
 }: RecordCardOptions) => {
   const [loose, setLoose] = useState(false);
 
   const { name, desc, currency, amount, updatedAt, recordDate, recordTime } =
     data;
 
-  const onClick = () => {
+  const handleClick = () => {
     if (selected) {
       onUnselected(data.id);
 
+      return;
+    }
+
+    if (hasSelected) {
+      onSelected(data.id);
       return;
     }
 
@@ -44,23 +49,15 @@ const RecordCard = ({
     <div className="record-card-root" data-loose={loose}>
       <Card
         className="record-card"
-        onClick={onClick}
+        onClick={handleClick}
         onLongPress={() => onSelected(data.id)}
         selected={selected}
+        title={name}
+        checked={selected}
+        editable={!selected && !hasSelected}
+        onEdit={() => onEdit(data)}
       >
         <div className="content">
-          <div className="header">
-            <div className="name">{name}</div>
-            <IconButton
-              icon={<MdEdit />}
-              size={20}
-              onClick={() => {
-                onEdit(data);
-              }}
-              stopPropagation={true}
-            />
-          </div>
-
           <div className="desc">{desc}</div>
         </div>
 
