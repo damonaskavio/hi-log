@@ -9,29 +9,34 @@ import useHiLogStore from "@/store/useHiLogStore";
 import getBase64 from "@/utils/getBase64";
 import { useVirtualizer } from "@tanstack/react-virtual";
 import isEmpty from "lodash/isEmpty";
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { Trans, useTranslation } from "react-i18next";
-import { IoAddCircleOutline } from "react-icons/io5";
+import { IoAddCircleOutline, IoClose, IoTrash } from "react-icons/io5";
 import { Link } from "react-router-dom";
 import { useShallow } from "zustand/react/shallow";
 import "./index.css";
+import ImageDialog from "@/components/Dialog/ImageDialog";
+import ActionDialog from "@/components/Dialog/ActionDialog";
 
 const SheetMedia = () => {
   const { t } = useTranslation();
   const [openDialog, setOpenDialog] = useState(false);
+  const [previewImg, setPreviewImg] = useState<string>();
+  const [checkedMedias, setCheckedMedias] = useState<string[]>([]);
+  const [showDelete, setShowDelete] = useState<boolean>(false);
   const galleryRef = useRef<HTMLInputElement>(null);
   const cameraRef = useRef<HTMLInputElement>(null);
   const parentRef = useRef(null);
   const { setRightMenu } = useMainLayoutContext();
 
-  const [medias, selectedLog, selectedSheet, addMedia, getMedias] =
+  const [selectedLog, selectedSheet, addMedia, getMedias, deleteMedias] =
     useHiLogStore(
       useShallow((state) => [
-        state.medias,
         state.selectedLog,
         state.selectedSheet,
         state.addMedia,
         state.getMedias,
+        state.deleteMedias,
       ])
     );
 
@@ -70,7 +75,8 @@ const SheetMedia = () => {
         })
       : [];
 
-  const isMediaEmpty = isEmpty(sheetMedias);
+  const isMediasEmpty = isEmpty(sheetMedias);
+  const isCheckedMediasEmpty = isEmpty(checkedMedias);
 
   const menuOptions = [
     { label: t("capture media"), onClick: () => cameraRef.current?.click() },
@@ -85,52 +91,101 @@ const SheetMedia = () => {
     lanes: 3,
   });
 
-  useEffect(() => {
-    setRightMenu(
-      isMediaEmpty
-        ? []
-        : [
-            <IconButton
-              icon={<IoAddCircleOutline />}
-              onClick={() => handleAddClick()}
-            />,
-          ]
-    );
+  const handleMediaChecked = (mediaId: string) => {
+    setCheckedMedias([...checkedMedias, mediaId]);
+  };
+
+  const handleMediaUnchecked = (mediaId: string) => {
+    setCheckedMedias(checkedMedias.filter((r) => r !== mediaId));
+  };
+
+  const handleMediaUncheckAll = () => {
+    setCheckedMedias([]);
+  };
+
+  const handleDeleteChecked = () => {
+    if (!isCheckedMediasEmpty) {
+      deleteMedias({ logId, sheetId, mediaIds: checkedMedias });
+      setShowDelete(false);
+      setCheckedMedias([]);
+    }
+  };
+
+  const renderRightMenu = useCallback(() => {
+    let menu: JSX.Element[] = [];
+
+    if (!isMediasEmpty) {
+      if (isCheckedMediasEmpty) {
+        menu = [
+          <IconButton
+            icon={<IoAddCircleOutline />}
+            onClick={() => handleAddClick()}
+          />,
+        ];
+      } else {
+        menu = [
+          <IconButton
+            icon={<IoClose />}
+            onClick={() => handleMediaUncheckAll()}
+          />,
+          <IconButton icon={<IoTrash />} onClick={() => setShowDelete(true)} />,
+        ];
+      }
+    }
+
+    setRightMenu(menu);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isMediaEmpty, medias]);
+  }, [isMediasEmpty, checkedMedias]);
+
+  useEffect(() => {
+    renderRightMenu();
+  }, [renderRightMenu]);
 
   return (
     <div className="sheet-media-root">
       {sheetId && logId ? (
         <>
-          {isMediaEmpty && <EmptyMessage msgKey="media empty" />}
+          {isMediasEmpty && <EmptyMessage msgKey="media empty" />}
           <PageContent>
             <div ref={parentRef} className="media-container">
               <div
                 className="media-virtualize"
                 style={{ height: `${getTotalSize()}px` }}
               >
-                {getVirtualItems().map(({ index, lane, start }) => (
-                  <div
-                    ref={measureElement}
-                    key={`media_${index}`}
-                    data-index={index}
-                    style={{
-                      position: "absolute",
-                      top: 0,
-                      left: `${lane * 33}%`,
-                      width: "33%",
-                      transform: `translateY(${start}px)`,
-                      padding: "10px",
-                    }}
-                  >
-                    <MediaCard src={sheetMedias[index].base64} />
-                  </div>
-                ))}
+                {getVirtualItems().map(({ index, lane, start }) => {
+                  const { base64, id } = sheetMedias[index];
+                  const checked = checkedMedias.includes(id);
+
+                  return (
+                    <div
+                      ref={measureElement}
+                      key={`media_${index}`}
+                      data-index={index}
+                      style={{
+                        position: "absolute",
+                        top: 0,
+                        left: `${lane * 33}%`,
+                        width: "33%",
+                        transform: `translateY(${start}px)`,
+                        padding: "10px",
+                      }}
+                    >
+                      <MediaCard
+                        src={base64}
+                        onClick={() => setPreviewImg(base64)}
+                        selected={checked}
+                        checked={checked}
+                        onChecked={() => handleMediaChecked(id)}
+                        onUnchecked={() => handleMediaUnchecked(id)}
+                        hasChecked={!isCheckedMediasEmpty}
+                      />
+                    </div>
+                  );
+                })}
               </div>
             </div>
 
-            {isMediaEmpty && (
+            {isMediasEmpty && (
               <Button
                 icon={<IoAddCircleOutline />}
                 onClick={handleAddClick}
@@ -148,6 +203,22 @@ const SheetMedia = () => {
             }}
             options={menuOptions}
           />
+
+          <ImageDialog
+            open={!!previewImg}
+            base64={previewImg}
+            onClose={() => {
+              setPreviewImg(undefined);
+            }}
+          />
+
+          <ActionDialog
+            message="confirm delete media"
+            open={showDelete}
+            onClose={() => setShowDelete(false)}
+            onSubmit={() => handleDeleteChecked()}
+          />
+
           <input
             ref={galleryRef}
             type="file"

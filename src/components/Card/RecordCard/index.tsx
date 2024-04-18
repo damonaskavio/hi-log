@@ -12,18 +12,20 @@ type RecordCardOptions = {
   data: Record;
   onEdit: (record: Record) => void;
   selected?: boolean;
-  onSelected: (recordId: string) => void;
-  onUnselected: (recordId: string) => void;
-  hasSelected?: boolean;
+  checked?: boolean;
+  onChecked: (recordId: string) => void;
+  onUnchecked: (recordId: string) => void;
+  hasChecked?: boolean;
 };
 
 const RecordCard = ({
   data,
   onEdit,
   selected = false,
-  onSelected,
-  onUnselected,
-  hasSelected = false,
+  checked = false,
+  onChecked,
+  onUnchecked,
+  hasChecked = false,
 }: RecordCardOptions) => {
   const [loose, setLoose] = useState(false);
 
@@ -31,14 +33,14 @@ const RecordCard = ({
     data;
 
   const handleClick = () => {
-    if (selected) {
-      onUnselected(data.id);
+    if (checked) {
+      onUnchecked(data.id);
 
       return;
     }
 
-    if (hasSelected) {
-      onSelected(data.id);
+    if (hasChecked) {
+      onChecked(data.id);
       return;
     }
 
@@ -50,11 +52,11 @@ const RecordCard = ({
       <Card
         className="record-card"
         onClick={handleClick}
-        onLongPress={() => onSelected(data.id)}
+        onLongPress={() => onChecked(data.id)}
         selected={selected}
         title={name}
-        checked={selected}
-        editable={!selected && !hasSelected}
+        checked={checked}
+        editable={!checked && !hasChecked}
         onEdit={() => onEdit(data)}
       >
         <div className="content">

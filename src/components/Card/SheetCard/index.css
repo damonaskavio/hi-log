@@ -1,6 +1,5 @@
 .sheet-card-root {
-  height: 100px;
-  max-height: 100px;
+  min-height: 100px;
 
   .content {
     flex: 1;
@@ -8,6 +7,17 @@
 
   .desc {
     font-size: var(--fs-sm);
+  }
+
+  .totals {
+    display: flex;
+    padding-top: var(--sp-sm);
+    padding-bottom: var(--sp-sm);
+    text-align: right;
+
+    > div {
+      flex: 1;
+    }
   }
 
   .date {

@@ -1,22 +1,48 @@
-import { CSSProperties, SyntheticEvent } from "react";
+import { SyntheticEvent } from "react";
+import Card from "..";
 import "./index.css";
 
 const MediaCard = ({
   src,
-  style = {},
-  setRef,
   onImageLoad,
+  onClick,
+  checked = false,
+  selected = false,
+  onChecked,
+  onUnchecked,
+  hasChecked = false,
 }: {
   src: string;
-  style?: CSSProperties;
-  setRef?: (el: HTMLElement | null) => void;
   onImageLoad?: (e: SyntheticEvent<HTMLImageElement, Event>) => void;
+  onClick?: () => void;
+  checked?: boolean;
+  selected?: boolean;
+  onChecked?: () => void;
+  onUnchecked?: () => void;
+  hasChecked?: boolean;
 }) => {
+  const handleClick = () => {
+    if (checked) {
+      onUnchecked?.();
+
+      return;
+    }
+
+    if (hasChecked) {
+      onChecked?.();
+      return;
+    }
+
+    onClick?.();
+  };
+
   return (
-    <div
-      ref={(el) => setRef?.(el)}
+    <Card
+      onClick={handleClick}
+      onLongPress={onChecked}
       className="media-card-root"
-      style={{ ...style }}
+      checked={checked}
+      selected={selected}
     >
       <img
         src={src}
@@ -24,7 +50,7 @@ const MediaCard = ({
           onImageLoad?.(e);
         }}
       />
-    </div>
+    </Card>
   );
 };
 

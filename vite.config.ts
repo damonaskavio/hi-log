@@ -29,7 +29,7 @@ export default defineConfig({
       includeAssets: ["**/*"],
       manifest: {
         name: "HiLog",
-        short_name: "hilog",
+        short_name: "Hi Log",
         description: "Log your expenses",
         start_url: "/",
         display: "standalone",

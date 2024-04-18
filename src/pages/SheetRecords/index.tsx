@@ -17,13 +17,15 @@ import { Record } from "@/store/createRecordSlice";
 import EditRecordModal from "@/components/Modal/EditRecordModal";
 import { Link } from "react-router-dom";
 import ActionDialog from "@/components/Dialog/ActionDialog";
+import CurrencySymbolMap from "@/utils/currency";
 
 const SheetRecords = () => {
   const { t } = useTranslation();
   const [addModalOpen, setAddModalOpen] = useState(false);
   const [editRecord, setEditRecord] = useState<Record>();
-  const [selectedRecords, setSelectedRecords] = useState<string[]>([]);
+  const [checkedRecords, setCheckedRecords] = useState<string[]>([]);
   const [showDelete, setShowDelete] = useState<boolean>(false);
+  const [showTotal, setShowTotal] = useState<boolean>(true);
   const { setRightMenu } = useMainLayoutContext();
 
   const [
@@ -45,7 +47,7 @@ const SheetRecords = () => {
   );
 
   const { id: logId } = selectedLog || {};
-  const { id: sheetId } = selectedSheet || {};
+  const { id: sheetId, totals } = selectedSheet || {};
 
   const sheetRecords =
     selectedLog && selectedSheet
@@ -56,7 +58,7 @@ const SheetRecords = () => {
       : [];
 
   const isRecordsEmpty = isEmpty(sheetRecords);
-  const isSelectedRecordsEmpty = isEmpty(selectedRecords);
+  const isCheckedRecordsEmpty = isEmpty(checkedRecords);
 
   const handleAddModalClick = () => {
     setAddModalOpen(true);
@@ -109,31 +111,35 @@ const SheetRecords = () => {
     }
   };
 
-  const handleRecordSelected = (recordId: string) => {
-    setSelectedRecords([...selectedRecords, recordId]);
+  const handleRecordChecked = (recordId: string) => {
+    setCheckedRecords([...checkedRecords, recordId]);
   };
 
-  const handleRecordUnselected = (recordId: string) => {
-    setSelectedRecords(selectedRecords.filter((r) => r !== recordId));
+  const handleRecordUnchecked = (recordId: string) => {
+    setCheckedRecords(checkedRecords.filter((r) => r !== recordId));
   };
 
-  const handleRecordUnselectAll = () => {
-    setSelectedRecords([]);
+  const handleRecordUncheckAll = () => {
+    setCheckedRecords([]);
   };
 
-  const handleDeleteSelected = () => {
+  const handleDeleteChecked = () => {
     if (logId && sheetId) {
-      deleteRecords({ recordIds: selectedRecords, logId, sheetId });
+      deleteRecords({ recordIds: checkedRecords, logId, sheetId });
       setShowDelete(false);
-      setSelectedRecords([]);
+      setCheckedRecords([]);
     }
+  };
+
+  const handleShowTotalsClick = () => {
+    setShowTotal(!showTotal);
   };
 
   const renderRightMenu = useCallback(() => {
     let menu: JSX.Element[] = [];
 
     if (!isRecordsEmpty) {
-      if (isSelectedRecordsEmpty) {
+      if (isCheckedRecordsEmpty) {
         menu = [
           <IconButton
             icon={<IoAddCircleOutline />}
@@ -144,7 +150,7 @@ const SheetRecords = () => {
         menu = [
           <IconButton
             icon={<IoClose />}
-            onClick={() => handleRecordUnselectAll()}
+            onClick={() => handleRecordUncheckAll()}
           />,
           <IconButton icon={<IoTrash />} onClick={() => setShowDelete(true)} />,
         ];
@@ -153,29 +159,29 @@ const SheetRecords = () => {
 
     setRightMenu(menu);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isRecordsEmpty, selectedRecords]);
+  }, [isRecordsEmpty, checkedRecords]);
 
   useEffect(() => {
     renderRightMenu();
   }, [renderRightMenu]);
 
   return (
-    <div>
+    <div className="sheet-records-root">
       {logId && sheetId ? (
         <>
           {isRecordsEmpty && <EmptyMessage msgKey="records empty" />}
 
-          <PageContent>
+          <PageContent className="sheet-records-content">
             <div className="records-list-container">
               {sheetRecords.map((record) => (
                 <RecordCard
                   key={record.id}
                   data={record}
                   onEdit={handleEditModalOpen}
-                  selected={selectedRecords.includes(record.id)}
-                  onSelected={handleRecordSelected}
-                  onUnselected={handleRecordUnselected}
-                  hasSelected={!isSelectedRecordsEmpty}
+                  checked={checkedRecords.includes(record.id)}
+                  onChecked={handleRecordChecked}
+                  onUnchecked={handleRecordUnchecked}
+                  hasChecked={!isCheckedRecordsEmpty}
                 />
               ))}
             </div>
@@ -190,6 +196,31 @@ const SheetRecords = () => {
               </Button>
             )}
           </PageContent>
+
+          {!isRecordsEmpty && (
+            <div
+              className="totals-footer"
+              data-collapsed={!showTotal}
+              onClick={handleShowTotalsClick}
+            >
+              <p className="header">
+                {t(showTotal ? "tap to hide" : "tap to show")}
+              </p>
+              <div className="content">
+                <div className="content-left">{`${sheetRecords.length} ${t(
+                  "records"
+                )}`}</div>
+                <div className="content-right">
+                  {totals &&
+                    Object.keys(totals).map((key) => (
+                      <p key={key}>{`${CurrencySymbolMap[key]} ${totals[
+                        key
+                      ].toFixed(2)}`}</p>
+                    ))}
+                </div>
+              </div>
+            </div>
+          )}
 
           <AddRecordModal
             open={addModalOpen}
@@ -208,7 +239,7 @@ const SheetRecords = () => {
             message="confirm delete records"
             open={showDelete}
             onClose={() => setShowDelete(false)}
-            onSubmit={() => handleDeleteSelected()}
+            onSubmit={() => handleDeleteChecked()}
           />
         </>
       ) : (

@@ -6,10 +6,6 @@
     flex: 1;
   }
 
-  .name {
-    font-weight: var(--fw-semi-bold);
-  }
-
   .date {
     display: flex;
     align-items: center;

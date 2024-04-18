@@ -18,11 +18,11 @@ import ActionDialog from "@/components/Dialog/ActionDialog";
 import Button from "@/components/Button";
 import EditSheetModal from "@/components/Modal/EditSheetModal";
 
-const SheetsList = () => {
+const LogSheets = () => {
   const { t } = useTranslation();
   const [addModalOpen, setAddModalOpen] = useState(false);
   const [editSheet, setEditSheet] = useState<Sheet>();
-  const [selectedSheets, setSelectedSheets] = useState<string[]>([]);
+  const [checkedSheets, setCheckedSheets] = useState<string[]>([]);
   const [showDelete, setShowDelete] = useState<boolean>(false);
   const { setRightMenu } = useMainLayoutContext();
 
@@ -53,7 +53,7 @@ const SheetsList = () => {
   const { id: logId } = selectedLog || {};
 
   const isSheetsEmpty = isEmpty(getLogSheets(logId || ""));
-  const isSelectedSheetsEmpty = isEmpty(selectedSheets);
+  const isCheckedSheetsEmpty = isEmpty(checkedSheets);
 
   const handleAddModalClick = () => {
     setAddModalOpen(true);
@@ -96,23 +96,23 @@ const SheetsList = () => {
     }
   };
 
-  const handleSheetSelected = (recordId: string) => {
-    setSelectedSheets([...selectedSheets, recordId]);
+  const handleSheetChecked = (sheetId: string) => {
+    setCheckedSheets([...checkedSheets, sheetId]);
   };
 
-  const handleSheetUnselected = (recordId: string) => {
-    setSelectedSheets(selectedSheets.filter((r) => r !== recordId));
+  const handleSheetUnchecked = (sheetId: string) => {
+    setCheckedSheets(checkedSheets.filter((r) => r !== sheetId));
   };
 
-  const handleSheetUnselectAll = () => {
-    setSelectedSheets([]);
+  const handleSheetUncheckAll = () => {
+    setCheckedSheets([]);
   };
 
-  const handleDeleteSelected = () => {
+  const handleDeleteChecked = () => {
     if (logId) {
-      deleteSheets({ sheetIds: selectedSheets, logId });
+      deleteSheets({ sheetIds: checkedSheets, logId });
       setShowDelete(false);
-      setSelectedSheets([]);
+      setCheckedSheets([]);
     }
   };
 
@@ -130,7 +130,7 @@ const SheetsList = () => {
     let menu: JSX.Element[] = [];
 
     if (!isSheetsEmpty) {
-      if (isSelectedSheetsEmpty) {
+      if (isCheckedSheetsEmpty) {
         menu = [
           <IconButton
             icon={<IoAddCircleOutline />}
@@ -141,7 +141,7 @@ const SheetsList = () => {
         menu = [
           <IconButton
             icon={<IoClose />}
-            onClick={() => handleSheetUnselectAll()}
+            onClick={() => handleSheetUncheckAll()}
           />,
           <IconButton icon={<IoTrash />} onClick={() => setShowDelete(true)} />,
         ];
@@ -150,7 +150,7 @@ const SheetsList = () => {
 
     setRightMenu(menu);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isSheetsEmpty, selectedSheets]);
+  }, [isSheetsEmpty, checkedSheets]);
 
   useEffect(() => {
     renderRightMenu();
@@ -170,10 +170,11 @@ const SheetsList = () => {
                     key={sheet.id}
                     data={sheet}
                     onEdit={handleEditModalOpen}
-                    selected={selectedSheets.includes(sheet.id)}
-                    onSelected={handleSheetSelected}
-                    onUnselected={handleSheetUnselected}
-                    hasSelected={!isSelectedSheetsEmpty}
+                    selected={selectedSheet?.id === sheet.id}
+                    checked={checkedSheets.includes(sheet.id)}
+                    onChecked={handleSheetChecked}
+                    onUnchecked={handleSheetUnchecked}
+                    hasChecked={!isCheckedSheetsEmpty}
                   />
                 ))}
             </div>
@@ -206,7 +207,7 @@ const SheetsList = () => {
             message="confirm delete sheets"
             open={showDelete}
             onClose={() => setShowDelete(false)}
-            onSubmit={() => handleDeleteSelected()}
+            onSubmit={() => handleDeleteChecked()}
           />
         </>
       ) : (
@@ -224,4 +225,4 @@ const SheetsList = () => {
   );
 };
 
-export default SheetsList;
+export default LogSheets;

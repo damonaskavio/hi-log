@@ -8,45 +8,47 @@ import { useNavigate } from "react-router-dom";
 import { useShallow } from "zustand/react/shallow";
 import Card from "..";
 import "./index.css";
+import CurrencySymbolMap from "@/utils/currency";
+import isEmpty from "lodash/isEmpty";
+import { useTranslation } from "react-i18next";
 
 type SheetCardOptions = {
   data: Sheet;
   onEdit?: (sheet: Sheet) => void;
   selected?: boolean;
-  onSelected?: (sheetId: string) => void;
-  onUnselected?: (sheetId: string) => void;
-  hasSelected?: boolean;
+  checked?: boolean;
+  onChecked?: (sheetId: string) => void;
+  onUnchecked?: (sheetId: string) => void;
+  hasChecked?: boolean;
 };
 
 const SheetCard = ({
   data,
   onEdit,
-  selected,
-  onSelected,
-  onUnselected,
-  hasSelected,
+  selected = false,
+  checked = false,
+  onChecked,
+  onUnchecked,
+  hasChecked,
 }: SheetCardOptions) => {
-  const { name, desc, updatedAt, id } = data;
+  const { t } = useTranslation();
+  const { name, desc, totals, updatedAt } = data;
 
   const navigate = useNavigate();
 
-  const [selectedLog, selectedSheet, setSelectedSheet] = useHiLogStore(
-    useShallow((state) => [
-      state.selectedLog,
-      state.selectedSheet,
-      state.setSelectedSheet,
-    ])
+  const [selectedLog, setSelectedSheet] = useHiLogStore(
+    useShallow((state) => [state.selectedLog, state.setSelectedSheet])
   );
 
   const handleClick = () => {
-    if (selected) {
-      onUnselected?.(data.id);
+    if (checked) {
+      onUnchecked?.(data.id);
 
       return;
     }
 
-    if (hasSelected) {
-      onSelected?.(data.id);
+    if (hasChecked) {
+      onChecked?.(data.id);
       return;
     }
 
@@ -62,16 +64,31 @@ const SheetCard = ({
   return (
     <Card
       className="sheet-card-root"
-      selected={!!selectedSheet && selectedSheet.id === id}
+      selected={selected}
       onClick={onClick}
-      onLongPress={() => onSelected?.(data.id)}
+      onLongPress={() => onChecked?.(data.id)}
       title={name}
-      checked={selected}
-      editable={!selected && !hasSelected}
+      checked={checked}
+      editable={!checked && !hasChecked}
       onEdit={() => onEdit?.(data)}
     >
       <div className="content">
         <div className="desc">{desc}</div>
+      </div>
+
+      <div className="totals">
+        <div className="totals-left">{t("totals")}</div>
+        <div className="totals-right">
+          {!isEmpty(totals) ? (
+            Object.keys(totals).map((key) => (
+              <p key={key}>{`${CurrencySymbolMap[key]} ${totals[key].toFixed(
+                2
+              )}`}</p>
+            ))
+          ) : (
+            <p>-</p>
+          )}
+        </div>
       </div>
 
       <div className="date">

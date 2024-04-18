@@ -2,12 +2,12 @@ import { useEffect, useRef, useState } from "react";
 
 type ClickEvent = {
   onClick?: (e?: React.MouseEvent<HTMLElement, MouseEvent>) => void;
-
   onPointerDown?: (e?: React.PointerEvent<HTMLElement>) => void;
   onPointerUp?: (e?: React.PointerEvent<HTMLElement>) => void;
   onMouseUp?: (e?: React.MouseEvent<HTMLElement, MouseEvent>) => void;
   onTouchEnd?: (e?: React.TouchEvent<HTMLElement>) => void;
   onBlur?: (e?: React.FocusEvent<HTMLElement>) => void;
+  onPointerMove?: (e?: React.PointerEvent<HTMLElement>) => void;
 };
 
 const useClickEvent = ({
@@ -93,6 +93,12 @@ const useClickEvent = ({
       deactivate();
     },
     onBlur: (e) => {
+      if (e) {
+        e.stopPropagation();
+      }
+      deactivate();
+    },
+    onPointerMove: (e) => {
       if (e) {
         e.stopPropagation();
       }

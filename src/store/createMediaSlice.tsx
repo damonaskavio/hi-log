@@ -26,6 +26,11 @@ export interface MediaSlice {
     mediaId: string;
   }) => Media | null;
   getMedias: (args: { logId: string; sheetId: string }) => Media[];
+  deleteMedias: (args: {
+    logId?: string;
+    sheetId?: string;
+    mediaIds: string[];
+  }) => void;
   resetMedias: () => void;
 }
 
@@ -65,6 +70,16 @@ const createMediaSlice: StateCreator<MediaSlice, [], [], MediaSlice> = (
   },
   getMedias: ({ logId, sheetId }) => {
     return get().medias[`${logId}_${sheetId}`] || [];
+  },
+  deleteMedias: ({ logId, sheetId, mediaIds }) => {
+    let medias = get().medias;
+    let sheetMedias = [...(medias[`${logId}_${sheetId}`] || [])];
+
+    sheetMedias = sheetMedias.filter((media) => !mediaIds.includes(media.id));
+
+    medias = { ...medias, [`${logId}_${sheetId}`]: sheetMedias };
+
+    set(() => ({ medias }));
   },
   resetMedias: () => set(() => ({ medias: {} })),
 });

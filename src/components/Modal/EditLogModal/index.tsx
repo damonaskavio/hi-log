@@ -7,14 +7,22 @@ import Modal from "..";
 import Form from "@/components/Form";
 import PageContent from "@/components/PageContent";
 import Spacer from "@/components/Spacer";
+import { Log } from "@/store/createLogSlice";
+import { useEffect } from "react";
 
-export type AddLogModalOptions = {
+export type EditLogModalOptions = {
   open?: boolean;
   onClose?: () => void;
   onSubmit?: (data: FieldValues) => void;
+  log?: Log;
 };
 
-const AddLogModal = ({ open, onClose, onSubmit }: AddLogModalOptions) => {
+const EditLogModal = ({
+  open,
+  onClose,
+  onSubmit,
+  log,
+}: EditLogModalOptions) => {
   const { t } = useTranslation();
 
   const { register, handleSubmit, reset } = useForm({
@@ -29,18 +37,32 @@ const AddLogModal = ({ open, onClose, onSubmit }: AddLogModalOptions) => {
     })();
   };
 
+  useEffect(() => {
+    if (log) {
+      const { name, desc } = log;
+      reset({
+        name,
+        desc,
+      });
+    } else {
+      reset();
+    }
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [log]);
+
   return (
-    <Modal title={t("add log")} open={open} onClose={() => onClose?.()}>
+    <Modal title={t("edit log")} open={open} onClose={() => onClose?.()}>
       <PageContent>
         <Form>
           <Input formRegister={register("name")} placeholder={t("name")} />
           <Input formRegister={register("desc")} placeholder={t("desc")} />
         </Form>
         <Spacer />
-        <Button onClick={onSubmitClick}>{t("add")}</Button>
+        <Button onClick={onSubmitClick}>{t("save")}</Button>
       </PageContent>
     </Modal>
   );
 };
 
-export default AddLogModal;
+export default EditLogModal;

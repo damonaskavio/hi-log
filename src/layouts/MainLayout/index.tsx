@@ -87,15 +87,20 @@ const MainLayout = () => {
 
   const renderNavigation = (key: string) => {
     const { path, icon, pattern } = tabs[key];
+
+    const isActive = getActive(pattern);
+
     return (
       <NavigationTab
         icon={icon}
-        active={getActive(pattern)}
+        active={isActive}
         onClick={() => {
-          setRightMenu([]);
-          setLeftMenu([]);
+          if (!isActive) {
+            setRightMenu([]);
+            setLeftMenu([]);
 
-          navigate(path);
+            navigate(path);
+          }
         }}
       />
     );

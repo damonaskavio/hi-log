@@ -17,6 +17,8 @@ const en_US = {
   cancel: "Cancel",
   confirm: "Confirm",
   add: "Add",
+  "tap to show": "Tap to Show",
+  "tap to hide": "Tap to Hide",
   // placeholder
   name: "Name",
   desc: "Description",
@@ -43,8 +45,15 @@ const en_US = {
   "default log sheet": "Default log sheet",
   "default log sheet desc": "Click on this sheet to start adding records!",
   // confirmation
+  "confirm delete media": "Would you like to delete the selected media(s)?",
   "confirm delete records": "Would you like to delete the selected records?",
-  "confirm delete sheets": "Would you like to delete the selected sheets?",
+  "confirm delete sheets":
+    "Would you like to delete the selected sheets? All related records and media will be removed as well.",
+  "confirm delete logs":
+    "Would you like to delete the selected logs? All related sheets, records and media will be removed as well.",
+  //labels
+  totals: "Total(s)",
+  records: "Record(s)",
 };
 
 export default en_US;

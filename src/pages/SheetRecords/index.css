@@ -1,5 +1,56 @@
-.records-list-container {
+.sheet-records-root {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+
+  .records-list-container {
     display: flex;
     flex-direction: column;
     row-gap: var(--sp-lg);
   }
+
+  .sheet-records-content {
+    flex: 1;
+    overflow-y: auto;
+  }
+
+  .totals-footer {
+    width: 100%;
+    background-color: var(--clr-neu-800);
+    box-shadow: 0px 0px 10px 0px var(--clr-neu-900);
+    min-height: 40px;
+
+    .header {
+      text-align: center;
+      font-size: var(--fs-sm);
+      padding-top: var(--sp-lg);
+    }
+
+    .content {
+      display: flex;
+      justify-content: space-evenly;
+      max-height: 0;
+      overflow-y: hidden;
+      transition: max-height 0.3s;
+
+      .content-left {
+        flex: 1;
+        text-align: left;
+        padding: var(--sp-lg);
+      }
+
+      .content-right {
+        flex: 1;
+        text-align: right;
+        padding: var(--sp-lg);
+      }
+    }
+
+    &[data-collapsed="false"] {
+      .content {
+        max-height: 200px;
+        overflow-y: auto;
+      }
+    }
+  }
+}
