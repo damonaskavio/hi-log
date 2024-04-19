@@ -7,6 +7,7 @@ import Modal from "..";
 import Form from "@/components/Form";
 import PageContent from "@/components/PageContent";
 import Spacer from "@/components/Spacer";
+import DateTimePicker from "@/components/DateTimePicker";
 
 export type AddSheetModalOptions = {
   open?: boolean;
@@ -17,8 +18,13 @@ export type AddSheetModalOptions = {
 const AddSheetModal = ({ open, onClose, onSubmit }: AddSheetModalOptions) => {
   const { t } = useTranslation();
 
-  const { register, handleSubmit, reset } = useForm({
-    defaultValues: { name: "", desc: "", logDate: new Date() },
+  const { register, handleSubmit, reset, watch } = useForm({
+    defaultValues: {
+      name: "",
+      desc: "",
+      logDate: new Date(),
+      sheetDate: undefined,
+    },
   });
 
   const onSubmitClick = () => {
@@ -35,6 +41,12 @@ const AddSheetModal = ({ open, onClose, onSubmit }: AddSheetModalOptions) => {
         <Form>
           <Input formRegister={register("name")} placeholder={t("name")} />
           <Input formRegister={register("desc")} placeholder={t("desc")} />
+          <DateTimePicker
+            formRegister={register("sheetDate")}
+            formWatch={watch}
+            placeholder={t("sheet date")}
+            type="date"
+          />
         </Form>
         <Spacer />
         <Button onClick={onSubmitClick}>{t("add")}</Button>

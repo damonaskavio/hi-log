@@ -4,6 +4,7 @@ import { FieldValues, useForm } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 import Modal from "..";
 
+import DateTimePicker from "@/components/DateTimePicker";
 import Form from "@/components/Form";
 import PageContent from "@/components/PageContent";
 import Spacer from "@/components/Spacer";
@@ -25,8 +26,12 @@ const EditSheetModal = ({
 }: EditSheetModalOptions) => {
   const { t } = useTranslation();
 
-  const { register, handleSubmit, reset } = useForm({
-    defaultValues: { name: "", desc: "", logDate: new Date() },
+  const { register, handleSubmit, reset, watch } = useForm<{
+    name: string;
+    desc: string;
+    sheetDate: Date | null;
+  }>({
+    defaultValues: { name: "", desc: "", sheetDate: null },
   });
 
   const onSubmitClick = () => {
@@ -39,10 +44,12 @@ const EditSheetModal = ({
 
   useEffect(() => {
     if (sheet) {
-      const { name, desc } = sheet;
+      const { name, desc, sheetDate } = sheet;
+
       reset({
         name,
         desc,
+        sheetDate,
       });
     } else {
       reset();
@@ -57,6 +64,12 @@ const EditSheetModal = ({
         <Form>
           <Input formRegister={register("name")} placeholder={t("name")} />
           <Input formRegister={register("desc")} placeholder={t("desc")} />
+          <DateTimePicker
+            formRegister={register("sheetDate")}
+            formWatch={watch}
+            placeholder={t("sheet date")}
+            type="date"
+          />
         </Form>
         <Spacer />
         <Button onClick={onSubmitClick}>{t("save")}</Button>

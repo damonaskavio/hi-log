@@ -10,7 +10,7 @@ import isEmpty from "lodash/isEmpty";
 import { useCallback, useEffect, useState } from "react";
 import { FieldValues } from "react-hook-form";
 import { Trans, useTranslation } from "react-i18next";
-import { IoAddCircleOutline, IoClose, IoTrash } from "react-icons/io5";
+import { IoAddCircleOutline, IoClose, IoTrashOutline } from "react-icons/io5";
 import { useShallow } from "zustand/react/shallow";
 import "./index.css";
 import { Record } from "@/store/createRecordSlice";
@@ -18,6 +18,7 @@ import EditRecordModal from "@/components/Modal/EditRecordModal";
 import { Link } from "react-router-dom";
 import ActionDialog from "@/components/Dialog/ActionDialog";
 import CurrencySymbolMap from "@/utils/currency";
+import { CiFilter } from "react-icons/ci";
 
 const SheetRecords = () => {
   const { t } = useTranslation();
@@ -142,6 +143,10 @@ const SheetRecords = () => {
       if (isCheckedRecordsEmpty) {
         menu = [
           <IconButton
+            icon={<CiFilter />}
+            onClick={() => handleAddModalClick()}
+          />,
+          <IconButton
             icon={<IoAddCircleOutline />}
             onClick={() => handleAddModalClick()}
           />,
@@ -152,7 +157,7 @@ const SheetRecords = () => {
             icon={<IoClose />}
             onClick={() => handleRecordUncheckAll()}
           />,
-          <IconButton icon={<IoTrash />} onClick={() => setShowDelete(true)} />,
+          <IconButton icon={<IoTrashOutline />} onClick={() => setShowDelete(true)} />,
         ];
       }
     }
@@ -222,18 +227,22 @@ const SheetRecords = () => {
             </div>
           )}
 
-          <AddRecordModal
-            open={addModalOpen}
-            onClose={handleAddModalClose}
-            onSubmit={handleAddRecord}
-          />
+          {addModalOpen && (
+            <AddRecordModal
+              open={addModalOpen}
+              onClose={handleAddModalClose}
+              onSubmit={handleAddRecord}
+            />
+          )}
 
-          <EditRecordModal
-            open={!!editRecord}
-            onClose={handleEditModalClose}
-            onSubmit={handleEditRecord}
-            record={editRecord}
-          />
+          {!!editRecord && (
+            <EditRecordModal
+              open={!!editRecord}
+              onClose={handleEditModalClose}
+              onSubmit={handleEditRecord}
+              record={editRecord}
+            />
+          )}
 
           <ActionDialog
             message="confirm delete records"

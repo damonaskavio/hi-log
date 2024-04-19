@@ -59,6 +59,7 @@ const EditRecordModal = ({
   useEffect(() => {
     if (record) {
       const { name, desc, recordDate, recordTime, currency, amount } = record;
+
       reset({
         name,
         desc,

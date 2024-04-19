@@ -5,6 +5,7 @@ export type Sheet = {
   id: string;
   name: string;
   updatedAt: Date;
+  sheetDate?: Date;
   tags?: string[];
   desc?: string;
   media: string[];
@@ -25,12 +26,14 @@ export interface SheetSlice {
     name: string;
     tags?: string[];
     desc?: string;
+    sheetDate?: Date;
   }) => void;
   updateSheet: (args: {
     logId: string;
     sheetId: string;
     name?: string;
     desc?: string;
+    sheetDate?: Date;
   }) => void;
   updateSheetTotal: (args: {
     logId: string;
@@ -53,7 +56,7 @@ const createSheetSlice: StateCreator<SheetSlice, [], [], SheetSlice> = (
 ) => ({
   selectedSheet: null,
   sheets: {},
-  addSheet: ({ logId, name, tags, desc }) => {
+  addSheet: ({ logId, name, tags, desc, sheetDate }) => {
     let sheets = get().sheets;
     const logSheets = [...(sheets[logId] || [])];
     const sheetIds = logSheets.map((ls) => ({ id: ls.id }));
@@ -67,13 +70,14 @@ const createSheetSlice: StateCreator<SheetSlice, [], [], SheetSlice> = (
       media: [],
       desc,
       totals: {},
+      sheetDate,
     });
 
     sheets = { ...sheets, [logId]: logSheets };
 
     set(() => ({ sheets }));
   },
-  updateSheet: ({ logId, sheetId, name, desc }) => {
+  updateSheet: ({ logId, sheetId, name, desc, sheetDate }) => {
     let sheets = get().sheets;
     const logSheets = [...(sheets[logId] || [])];
 
@@ -86,6 +90,7 @@ const createSheetSlice: StateCreator<SheetSlice, [], [], SheetSlice> = (
         name: name || "",
         desc,
         updatedAt: new Date(),
+        sheetDate,
       };
 
       sheets = { ...sheets, [logId]: logSheets };

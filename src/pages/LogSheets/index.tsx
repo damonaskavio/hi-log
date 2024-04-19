@@ -9,7 +9,7 @@ import isEmpty from "lodash/isEmpty";
 import { useCallback, useEffect, useState } from "react";
 import { FieldValues } from "react-hook-form";
 import { Trans, useTranslation } from "react-i18next";
-import { IoAddCircleOutline, IoClose, IoTrash } from "react-icons/io5";
+import { IoAddCircleOutline, IoClose, IoTrashOutline } from "react-icons/io5";
 import { Link } from "react-router-dom";
 import { useShallow } from "zustand/react/shallow";
 import "./index.css";
@@ -60,13 +60,14 @@ const LogSheets = () => {
   };
 
   const handleAddSheet = (values: FieldValues) => {
-    const { name, desc } = values;
+    const { name, desc, sheetDate } = values;
 
     if (logId) {
       addSheet({
         logId,
         name,
         desc,
+        sheetDate,
       });
     }
   };
@@ -85,13 +86,14 @@ const LogSheets = () => {
 
   const handleEditSheet = (values: FieldValues) => {
     if (selectedLog && editSheet) {
-      const { name, desc } = values;
+      const { name, desc, sheetDate } = values;
 
       updateSheet({
         logId: selectedLog.id,
         sheetId: editSheet.id,
         name,
         desc,
+        sheetDate,
       });
     }
   };
@@ -143,7 +145,7 @@ const LogSheets = () => {
             icon={<IoClose />}
             onClick={() => handleSheetUncheckAll()}
           />,
-          <IconButton icon={<IoTrash />} onClick={() => setShowDelete(true)} />,
+          <IconButton icon={<IoTrashOutline />} onClick={() => setShowDelete(true)} />,
         ];
       }
     }
@@ -190,18 +192,22 @@ const LogSheets = () => {
             )}
           </PageContent>
 
-          <AddSheetModal
-            open={addModalOpen}
-            onClose={() => handleAddModalClose()}
-            onSubmit={handleAddSheet}
-          />
+          {addModalOpen && (
+            <AddSheetModal
+              open={addModalOpen}
+              onClose={() => handleAddModalClose()}
+              onSubmit={handleAddSheet}
+            />
+          )}
 
-          <EditSheetModal
-            open={!!editSheet}
-            onClose={() => handleEditModalClose()}
-            onSubmit={handleEditSheet}
-            sheet={editSheet}
-          />
+          {!!editSheet && (
+            <EditSheetModal
+              open={!!editSheet}
+              onClose={() => handleEditModalClose()}
+              onSubmit={handleEditSheet}
+              sheet={editSheet}
+            />
+          )}
 
           <ActionDialog
             message="confirm delete sheets"

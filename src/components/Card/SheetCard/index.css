@@ -1,26 +1,28 @@
 .sheet-card-root {
-  min-height: 100px;
+  .sheet-card {
+    min-height: 100px;
 
-  .content {
-    flex: 1;
-  }
-
-  .desc {
-    font-size: var(--fs-sm);
-  }
-
-  .totals {
-    display: flex;
-    padding-top: var(--sp-sm);
-    padding-bottom: var(--sp-sm);
-    text-align: right;
-
-    > div {
+    .content {
       flex: 1;
     }
-  }
 
+    .desc {
+      font-size: var(--fs-sm);
+    }
+
+    .totals {
+      display: flex;
+      padding-top: var(--sp-sm);
+      padding-bottom: var(--sp-sm);
+      text-align: right;
+
+      > div {
+        flex: 1;
+      }
+    }
+  }
   .date {
+    margin-top: var(--sp-xs);
     display: flex;
     align-items: center;
     justify-content: flex-end;

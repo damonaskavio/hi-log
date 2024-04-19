@@ -5,6 +5,7 @@ type ClickEvent = {
   onPointerDown?: (e?: React.PointerEvent<HTMLElement>) => void;
   onPointerUp?: (e?: React.PointerEvent<HTMLElement>) => void;
   onMouseUp?: (e?: React.MouseEvent<HTMLElement, MouseEvent>) => void;
+  onTouchStart?: (e?: React.TouchEvent<HTMLElement>) => void;
   onTouchEnd?: (e?: React.TouchEvent<HTMLElement>) => void;
   onBlur?: (e?: React.FocusEvent<HTMLElement>) => void;
   onPointerMove?: (e?: React.PointerEvent<HTMLElement>) => void;
@@ -21,30 +22,43 @@ const useClickEvent = ({
 }) => {
   const timerRef = useRef<number | null>(null);
   const [active, setActive] = useState(false);
+  const activeRef = useRef<boolean>(false);
+  const lastMousePosRef = useRef<{ x: number; y: number } | null>(null);
 
   const listener = () => {
     setActive(false);
   };
 
   const activate = () => {
-    window.addEventListener("pointerup", listener, { once: true });
-    setActive(true);
+    if (!activeRef.current) {
+      console.log("in here");
+      window.addEventListener("pointerup", listener, { once: true });
+      setActive(true);
+      activeRef.current = true;
 
-    if (onLongPress) {
-      timerRef.current = setTimeout(() => {
-        onLongPress();
-      }, 500);
+      if (onLongPress) {
+        console.log("has long press");
+        timerRef.current = setTimeout(() => {
+          console.log("onlongpress");
+          onLongPress();
+        }, 500);
+      }
     }
   };
 
   const deactivate = () => {
-    window.removeEventListener("pointerup", listener);
+    if (activeRef.current) {
+      console.log("deactivated");
+      window.removeEventListener("pointerup", listener);
 
-    if (timerRef.current) {
-      clearTimeout(timerRef.current);
-      timerRef.current = null;
+      if (timerRef.current) {
+        clearTimeout(timerRef.current);
+        timerRef.current = null;
+      }
+      setActive(false);
+      activeRef.current = false;
+      lastMousePosRef.current = null;
     }
-    setActive(false);
   };
 
   useEffect(() => {
@@ -55,6 +69,7 @@ const useClickEvent = ({
 
   const clickEvent: ClickEvent = {
     onClick: (e) => {
+      console.log("onclick");
       if (e) {
         if (stopPropagation) {
           e.stopPropagation();
@@ -69,24 +84,22 @@ const useClickEvent = ({
       }
     },
     onPointerDown: (e) => {
+      console.log("onpointerdown");
       if (e) {
         e.stopPropagation();
       }
       activate();
     },
+
     onPointerUp: (e) => {
       if (e) {
         e.stopPropagation();
       }
+
+      lastMousePosRef.current = null;
       deactivate();
     },
     onMouseUp: (e) => {
-      if (e) {
-        e.stopPropagation();
-      }
-      deactivate();
-    },
-    onTouchEnd: (e) => {
       if (e) {
         e.stopPropagation();
       }
@@ -101,8 +114,21 @@ const useClickEvent = ({
     onPointerMove: (e) => {
       if (e) {
         e.stopPropagation();
+
+        const curMouseX = e.clientX;
+        const curMouseY = e.clientY;
+        if (lastMousePosRef.current) {
+          const { x: prevMouseX, y: prevMouseY } = lastMousePosRef.current;
+          const distance =
+            Math.abs(curMouseX - prevMouseX) + Math.abs(curMouseY - prevMouseY);
+
+          if (distance > 1) {
+            deactivate();
+          }
+        }
+
+        lastMousePosRef.current = { x: curMouseX, y: curMouseY };
       }
-      deactivate();
     },
   };
 

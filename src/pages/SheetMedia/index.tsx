@@ -11,7 +11,7 @@ import { useVirtualizer } from "@tanstack/react-virtual";
 import isEmpty from "lodash/isEmpty";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { Trans, useTranslation } from "react-i18next";
-import { IoAddCircleOutline, IoClose, IoTrash } from "react-icons/io5";
+import { IoAddCircleOutline, IoClose, IoTrashOutline } from "react-icons/io5";
 import { Link } from "react-router-dom";
 import { useShallow } from "zustand/react/shallow";
 import "./index.css";
@@ -128,7 +128,7 @@ const SheetMedia = () => {
             icon={<IoClose />}
             onClick={() => handleMediaUncheckAll()}
           />,
-          <IconButton icon={<IoTrash />} onClick={() => setShowDelete(true)} />,
+          <IconButton icon={<IoTrashOutline />} onClick={() => setShowDelete(true)} />,
         ];
       }
     }

@@ -27,6 +27,7 @@ const en_US = {
   "record date": "Record Date",
   "record time": "Record Time",
   "log date": "Log Date",
+  "sheet date": "Sheet Date",
   // empty
   "logs empty":
     "It seems like you don't have any logs. Would you like to make one?",

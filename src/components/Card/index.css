@@ -11,6 +11,8 @@
   transition: outline var(--ts-fast), transform var(--ts-fast),
     background-color var(--ts-fast), color var(--ts-fast);
 
+  user-select: none;
+
   .header {
     flex-shrink: 0;
     display: flex;

@@ -32,7 +32,7 @@ const SheetCard = ({
   hasChecked,
 }: SheetCardOptions) => {
   const { t } = useTranslation();
-  const { name, desc, totals, updatedAt } = data;
+  const { name, desc, totals, updatedAt, sheetDate } = data;
 
   const navigate = useNavigate();
 
@@ -62,40 +62,45 @@ const SheetCard = ({
   const [, { onClick }] = useClickEvent({ onClick: handleClick });
 
   return (
-    <Card
-      className="sheet-card-root"
-      selected={selected}
-      onClick={onClick}
-      onLongPress={() => onChecked?.(data.id)}
-      title={name}
-      checked={checked}
-      editable={!checked && !hasChecked}
-      onEdit={() => onEdit?.(data)}
-    >
-      <div className="content">
-        <div className="desc">{desc}</div>
-      </div>
-
-      <div className="totals">
-        <div className="totals-left">{t("totals")}</div>
-        <div className="totals-right">
-          {!isEmpty(totals) ? (
-            Object.keys(totals).map((key) => (
-              <p key={key}>{`${CurrencySymbolMap[key]} ${totals[key].toFixed(
-                2
-              )}`}</p>
-            ))
-          ) : (
-            <p>-</p>
-          )}
+    <div className="sheet-card-root">
+      <Card
+        className="sheet-card"
+        selected={selected}
+        onClick={onClick}
+        onLongPress={() => onChecked?.(data.id)}
+        title={name}
+        checked={checked}
+        editable={!checked && !hasChecked}
+        onEdit={() => onEdit?.(data)}
+      >
+        <div className="content">
+          <div className="desc">{desc}</div>
         </div>
-      </div>
 
+        <div className="totals">
+          <div className="totals-left">{t("totals")}</div>
+          <div className="totals-right">
+            {!isEmpty(totals) ? (
+              Object.keys(totals).map((key) => (
+                <p key={key}>{`${CurrencySymbolMap[key]} ${totals[key].toFixed(
+                  2
+                )}`}</p>
+              ))
+            ) : (
+              <p>-</p>
+            )}
+          </div>
+        </div>
+
+        <div className="sheet-date-time">
+          {`${sheetDate ? dayjs(sheetDate).format(Constants.date_format) : ""}`}
+        </div>
+      </Card>
       <div className="date">
         <p>{dayjs(updatedAt).format(Constants.datetime_format)}</p>
         <TbRefresh />
       </div>
-    </Card>
+    </div>
   );
 };
 

@@ -9,7 +9,7 @@ import isEmpty from "lodash/isEmpty";
 import { useCallback, useEffect, useState } from "react";
 import { FieldValues } from "react-hook-form";
 import { useTranslation } from "react-i18next";
-import { IoAddCircleOutline, IoClose, IoTrash } from "react-icons/io5";
+import { IoAddCircleOutline, IoClose, IoTrashOutline } from "react-icons/io5";
 import { useShallow } from "zustand/react/shallow";
 
 import "./index.css";
@@ -117,7 +117,7 @@ const LogsList = () => {
             icon={<IoClose />}
             onClick={() => handleLogUncheckAll()}
           />,
-          <IconButton icon={<IoTrash />} onClick={() => setShowDelete(true)} />,
+          <IconButton icon={<IoTrashOutline />} onClick={() => setShowDelete(true)} />,
         ];
       }
     }
@@ -172,18 +172,22 @@ const LogsList = () => {
         EXPERIMENTAL: Reset All Data
       </button>
 
-      <AddLogModal
-        open={addModalOpen}
-        onClose={() => handleAddModalClose()}
-        onSubmit={handleAddLog}
-      />
+      {addModalOpen && (
+        <AddLogModal
+          open={addModalOpen}
+          onClose={() => handleAddModalClose()}
+          onSubmit={handleAddLog}
+        />
+      )}
 
-      <EditLogModal
-        open={!!editLog}
-        onClose={() => handleEditModalClose()}
-        onSubmit={handleEditLog}
-        log={editLog}
-      />
+      {!!editLog && (
+        <EditLogModal
+          open={!!editLog}
+          onClose={() => handleEditModalClose()}
+          onSubmit={handleEditLog}
+          log={editLog}
+        />
+      )}
 
       <ActionDialog
         message="confirm delete logs"
