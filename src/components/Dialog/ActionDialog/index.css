@@ -5,7 +5,7 @@
 .action-dialog {
   .action-title {
     text-align: center;
-    padding: var(--sp-xxl);
+    padding: var(--sp-xl) var(--sp-xl);
   }
 
   .action-container {

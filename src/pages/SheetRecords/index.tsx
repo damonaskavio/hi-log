@@ -19,6 +19,16 @@ import { Link } from "react-router-dom";
 import ActionDialog from "@/components/Dialog/ActionDialog";
 import CurrencySymbolMap from "@/utils/currency";
 import { CiFilter } from "react-icons/ci";
+import FilterSortDialog, {
+  SortedOption,
+} from "@/components/Dialog/FilterSortDialog";
+
+const sortFields = [
+  { label: "name", value: "name" },
+  { label: "amount", value: "amount" },
+  { label: "record date", value: "recordDate" },
+  { label: "updated date", value: "updatedAt" },
+];
 
 const SheetRecords = () => {
   const { t } = useTranslation();
@@ -27,6 +37,8 @@ const SheetRecords = () => {
   const [checkedRecords, setCheckedRecords] = useState<string[]>([]);
   const [showDelete, setShowDelete] = useState<boolean>(false);
   const [showTotal, setShowTotal] = useState<boolean>(true);
+  const [showSort, setShowSort] = useState<boolean>(false);
+  const [sorted, setSorted] = useState<SortedOption | undefined>();
   const { setRightMenu } = useMainLayoutContext();
 
   const [
@@ -57,6 +69,45 @@ const SheetRecords = () => {
           sheetId: selectedSheet.id,
         })
       : [];
+
+  const getSortedRecords = () => {
+    const { value: sortValue, sort } = sorted || {};
+
+    const sortedRecords = [...sheetRecords];
+
+    if (sortValue) {
+      sortedRecords.sort((a, b) => {
+        const sortValueA = a[sortValue as keyof Record];
+        const sortValueB = b[sortValue as keyof Record];
+
+        let c = sortValueA;
+        let d = sortValueB;
+
+        if (sort === "desc") {
+          c = sortValueB;
+          d = sortValueA;
+        }
+
+        if (c && d) {
+          switch (sortValue) {
+            case "name":
+              if (c > d) {
+                return 1;
+              }
+
+              if (c < d) {
+                return -1;
+              }
+              break;
+          }
+        }
+
+        return 0;
+      });
+    }
+
+    return sortedRecords;
+  };
 
   const isRecordsEmpty = isEmpty(sheetRecords);
   const isCheckedRecordsEmpty = isEmpty(checkedRecords);
@@ -136,6 +187,10 @@ const SheetRecords = () => {
     setShowTotal(!showTotal);
   };
 
+  const handleShowSortClick = () => {
+    setShowSort(true);
+  };
+
   const renderRightMenu = useCallback(() => {
     let menu: JSX.Element[] = [];
 
@@ -144,7 +199,7 @@ const SheetRecords = () => {
         menu = [
           <IconButton
             icon={<CiFilter />}
-            onClick={() => handleAddModalClick()}
+            onClick={() => handleShowSortClick()}
           />,
           <IconButton
             icon={<IoAddCircleOutline />}
@@ -157,7 +212,10 @@ const SheetRecords = () => {
             icon={<IoClose />}
             onClick={() => handleRecordUncheckAll()}
           />,
-          <IconButton icon={<IoTrashOutline />} onClick={() => setShowDelete(true)} />,
+          <IconButton
+            icon={<IoTrashOutline />}
+            onClick={() => setShowDelete(true)}
+          />,
         ];
       }
     }
@@ -178,7 +236,7 @@ const SheetRecords = () => {
 
           <PageContent className="sheet-records-content">
             <div className="records-list-container">
-              {sheetRecords.map((record) => (
+              {getSortedRecords().map((record) => (
                 <RecordCard
                   key={record.id}
                   data={record}
@@ -243,6 +301,16 @@ const SheetRecords = () => {
               record={editRecord}
             />
           )}
+
+          <FilterSortDialog
+            open={showSort}
+            onClose={() => setShowSort(false)}
+            sortFields={sortFields}
+            sorted={sorted}
+            onSort={(s) => {
+              setSorted(s);
+            }}
+          />
 
           <ActionDialog
             message="confirm delete records"

@@ -1,0 +1,22 @@
+.filter-sort-dialog-root {
+  .action-title {
+    text-align: left;
+  }
+
+  .filter-sort-dialog-content {
+    padding: 0px var(--sp-xxl);
+    padding-bottom: var(--sp-xl);
+  }
+}
+
+.radio-field-root {
+  display: flex;
+  column-gap: var(--sp-md);
+  align-items: center;
+
+  &[data-checked="true"] {
+    .radio {
+      color: var(--clr-pri-400);
+    }
+  }
+}

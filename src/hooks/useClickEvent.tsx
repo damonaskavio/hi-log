@@ -31,15 +31,12 @@ const useClickEvent = ({
 
   const activate = () => {
     if (!activeRef.current) {
-      console.log("in here");
       window.addEventListener("pointerup", listener, { once: true });
       setActive(true);
       activeRef.current = true;
 
       if (onLongPress) {
-        console.log("has long press");
         timerRef.current = setTimeout(() => {
-          console.log("onlongpress");
           onLongPress();
         }, 500);
       }
@@ -48,7 +45,6 @@ const useClickEvent = ({
 
   const deactivate = () => {
     if (activeRef.current) {
-      console.log("deactivated");
       window.removeEventListener("pointerup", listener);
 
       if (timerRef.current) {
@@ -69,7 +65,6 @@ const useClickEvent = ({
 
   const clickEvent: ClickEvent = {
     onClick: (e) => {
-      console.log("onclick");
       if (e) {
         if (stopPropagation) {
           e.stopPropagation();
@@ -84,7 +79,6 @@ const useClickEvent = ({
       }
     },
     onPointerDown: (e) => {
-      console.log("onpointerdown");
       if (e) {
         e.stopPropagation();
       }

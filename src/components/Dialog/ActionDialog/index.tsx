@@ -1,21 +1,23 @@
 import { useTranslation } from "react-i18next";
 import Dialog, { DialogOptions } from "..";
 import "./index.css";
+import { PropsWithChildren } from "react";
+import classnames from "classnames";
 
 type ActionDialogOptions = DialogOptions & {
   message?: string;
-  component?: JSX.Element;
   options?: { label: string; onClick: () => void }[];
   onSubmit?: () => void;
 };
 
 const ActionDialog = ({
   message,
-  component,
   options,
   onSubmit,
+  children,
+  className,
   ...dialogOptions
-}: ActionDialogOptions) => {
+}: PropsWithChildren<ActionDialogOptions>) => {
   const { t } = useTranslation();
 
   const defaultOptions = [
@@ -24,10 +26,13 @@ const ActionDialog = ({
   ];
 
   return (
-    <Dialog {...dialogOptions} className="action-dialog-root">
+    <Dialog
+      className={classnames("action-dialog-root", className)}
+      {...dialogOptions}
+    >
       <div className="action-dialog">
         {message && <p className="action-title">{t(message)}</p>}
-        {component}
+        {children}
         <div className="action-container">
           {(options || defaultOptions).map(({ label, onClick }, index) => (
             <div

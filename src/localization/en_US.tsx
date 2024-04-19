@@ -28,6 +28,7 @@ const en_US = {
   "record time": "Record Time",
   "log date": "Log Date",
   "sheet date": "Sheet Date",
+  "updated date": "Updated Date",
   // empty
   "logs empty":
     "It seems like you don't have any logs. Would you like to make one?",
@@ -53,8 +54,13 @@ const en_US = {
   "confirm delete logs":
     "Would you like to delete the selected logs? All related sheets, records and media will be removed as well.",
   //labels
+  none: "None",
   totals: "Total(s)",
   records: "Record(s)",
+  "filter by": "Filter by",
+  "sort by": "Sort by",
+  ascending: "Ascending",
+  descending: "Descending",
 };
 
 export default en_US;
