@@ -18,6 +18,16 @@ import IconButton from "@/components/IconButton";
 import { Log } from "@/store/createLogSlice";
 import ActionDialog from "@/components/Dialog/ActionDialog";
 import EditLogModal from "@/components/Modal/EditLogModal";
+import { CiFilter } from "react-icons/ci";
+import FilterSortDialog, {
+  SortedOption,
+} from "@/components/Dialog/FilterSortDialog";
+import sortByField from "@/utils/sortByField";
+
+const sortFields = [
+  { label: "name", value: "name" },
+  { label: "updated date", value: "updatedAt" },
+];
 
 const LogsList = () => {
   const { t } = useTranslation();
@@ -26,6 +36,8 @@ const LogsList = () => {
   const [checkedLogs, setCheckedLogs] = useState<string[]>([]);
   const [showDelete, setShowDelete] = useState<boolean>(false);
   const [showResetAll, setShowResetAll] = useState<boolean>(false);
+  const [showSort, setShowSort] = useState<boolean>(false);
+  const [sorted, setSorted] = useState<SortedOption | undefined>();
   const { setRightMenu } = useMainLayoutContext();
 
   const [logs, selectedLog, createLog, updateLog, deleteLogs, resetAll] =
@@ -42,6 +54,19 @@ const LogsList = () => {
 
   const isLogsEmpty = isEmpty(logs);
   const isCheckedLogsEmpty = isEmpty(checkedLogs);
+
+  const getSortedLogs = () => {
+    const { value: sortField, sort } = sorted || {};
+
+    if (sortField && sort) {
+      return sortByField<Log>(logs, {
+        field: sortField as keyof Log,
+        sort,
+      }) as Log[];
+    }
+
+    return logs;
+  };
 
   const handleAddModalClick = () => {
     setAddModalOpen(true);
@@ -100,12 +125,20 @@ const LogsList = () => {
     }
   };
 
+  const handleShowSortClick = () => {
+    setShowSort(true);
+  };
+
   const renderRightMenu = useCallback(() => {
     let menu: JSX.Element[] = [];
 
     if (!isLogsEmpty) {
       if (isCheckedLogsEmpty) {
         menu = [
+          <IconButton
+            icon={<CiFilter />}
+            onClick={() => handleShowSortClick()}
+          />,
           <IconButton
             icon={<IoAddCircleOutline />}
             onClick={() => handleAddModalClick()}
@@ -117,7 +150,10 @@ const LogsList = () => {
             icon={<IoClose />}
             onClick={() => handleLogUncheckAll()}
           />,
-          <IconButton icon={<IoTrashOutline />} onClick={() => setShowDelete(true)} />,
+          <IconButton
+            icon={<IoTrashOutline />}
+            onClick={() => setShowDelete(true)}
+          />,
         ];
       }
     }
@@ -137,7 +173,7 @@ const LogsList = () => {
       <PageContent>
         {!isLogsEmpty && (
           <div className="logs-list-container">
-            {logs.map((log) => (
+            {getSortedLogs().map((log) => (
               <LogCard
                 key={`log_${log.id}`}
                 data={log}
@@ -188,6 +224,16 @@ const LogsList = () => {
           log={editLog}
         />
       )}
+
+      <FilterSortDialog
+        open={showSort}
+        onClose={() => setShowSort(false)}
+        sortFields={sortFields}
+        sorted={sorted}
+        onSort={(s) => {
+          setSorted(s);
+        }}
+      />
 
       <ActionDialog
         message="confirm delete logs"

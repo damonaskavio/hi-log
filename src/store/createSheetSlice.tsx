@@ -45,7 +45,7 @@ export interface SheetSlice {
   setSelectedSheet: (sheet?: Sheet) => void;
   checkSelectedSheet: (args: { logId: string; sheetId: string }) => void;
   getSheet: (logId: string, sheetId: string) => Sheet | null;
-  getLogSheets: (logId: string) => Sheet[] | null;
+  getLogSheets: (logId: string) => Sheet[];
   getLatestLogSheet: (logId: string) => Sheet;
   resetSheets: () => void;
 }

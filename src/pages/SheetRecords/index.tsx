@@ -22,6 +22,7 @@ import { CiFilter } from "react-icons/ci";
 import FilterSortDialog, {
   SortedOption,
 } from "@/components/Dialog/FilterSortDialog";
+import sortByField from "@/utils/sortByField";
 
 const sortFields = [
   { label: "name", value: "name" },
@@ -71,42 +72,16 @@ const SheetRecords = () => {
       : [];
 
   const getSortedRecords = () => {
-    const { value: sortValue, sort } = sorted || {};
+    const { value: sortField, sort } = sorted || {};
 
-    const sortedRecords = [...sheetRecords];
-
-    if (sortValue) {
-      sortedRecords.sort((a, b) => {
-        const sortValueA = a[sortValue as keyof Record];
-        const sortValueB = b[sortValue as keyof Record];
-
-        let c = sortValueA;
-        let d = sortValueB;
-
-        if (sort === "desc") {
-          c = sortValueB;
-          d = sortValueA;
-        }
-
-        if (c && d) {
-          switch (sortValue) {
-            case "name":
-              if (c > d) {
-                return 1;
-              }
-
-              if (c < d) {
-                return -1;
-              }
-              break;
-          }
-        }
-
-        return 0;
-      });
+    if (sortField && sort) {
+      return sortByField<Record>(sheetRecords, {
+        field: sortField as keyof Record,
+        sort,
+      }) as Record[];
     }
 
-    return sortedRecords;
+    return sheetRecords;
   };
 
   const isRecordsEmpty = isEmpty(sheetRecords);

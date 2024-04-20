@@ -17,6 +17,24 @@ import { Sheet } from "@/store/createSheetSlice";
 import ActionDialog from "@/components/Dialog/ActionDialog";
 import Button from "@/components/Button";
 import EditSheetModal from "@/components/Modal/EditSheetModal";
+import { CiFilter } from "react-icons/ci";
+import FilterSortDialog, {
+  SortedOption,
+} from "@/components/Dialog/FilterSortDialog";
+import sortByField from "@/utils/sortByField";
+
+const sortFields = [
+  { label: "name", value: "name" },
+  {
+    label: "amount",
+    value: "totals",
+    fieldFn: (sheet: Sheet) => {
+      return Object.values(sheet.totals).reduce((total, num) => total + num, 0);
+    },
+  },
+  { label: "sheet date", value: "sheetDate" },
+  { label: "updated date", value: "updatedAt" },
+];
 
 const LogSheets = () => {
   const { t } = useTranslation();
@@ -24,6 +42,8 @@ const LogSheets = () => {
   const [editSheet, setEditSheet] = useState<Sheet>();
   const [checkedSheets, setCheckedSheets] = useState<string[]>([]);
   const [showDelete, setShowDelete] = useState<boolean>(false);
+  const [showSort, setShowSort] = useState<boolean>(false);
+  const [sorted, setSorted] = useState<SortedOption | undefined>();
   const { setRightMenu } = useMainLayoutContext();
 
   const [
@@ -52,7 +72,23 @@ const LogSheets = () => {
 
   const { id: logId } = selectedLog || {};
 
-  const isSheetsEmpty = isEmpty(getLogSheets(logId || ""));
+  const logSheets = selectedLog ? getLogSheets(logId || "") : [];
+
+  const getSortedSheets = () => {
+    const { value: sortField, sort } = sorted || {};
+
+    if (sortField && sort) {
+      return sortByField<Sheet>(logSheets, {
+        field: sortField as keyof Sheet,
+        sort,
+        fieldFn: sortFields.find((sf) => sf.value === sortField)?.fieldFn,
+      }) as Sheet[];
+    }
+
+    return logSheets;
+  };
+
+  const isSheetsEmpty = isEmpty(logSheets);
   const isCheckedSheetsEmpty = isEmpty(checkedSheets);
 
   const handleAddModalClick = () => {
@@ -118,6 +154,10 @@ const LogSheets = () => {
     }
   };
 
+  const handleShowSortClick = () => {
+    setShowSort(true);
+  };
+
   useEffect(() => {
     if (logId) {
       if (!selectedSheet) {
@@ -135,6 +175,10 @@ const LogSheets = () => {
       if (isCheckedSheetsEmpty) {
         menu = [
           <IconButton
+            icon={<CiFilter />}
+            onClick={() => handleShowSortClick()}
+          />,
+          <IconButton
             icon={<IoAddCircleOutline />}
             onClick={() => handleAddModalClick()}
           />,
@@ -145,7 +189,10 @@ const LogSheets = () => {
             icon={<IoClose />}
             onClick={() => handleSheetUncheckAll()}
           />,
-          <IconButton icon={<IoTrashOutline />} onClick={() => setShowDelete(true)} />,
+          <IconButton
+            icon={<IoTrashOutline />}
+            onClick={() => setShowDelete(true)}
+          />,
         ];
       }
     }
@@ -167,7 +214,7 @@ const LogSheets = () => {
           <PageContent>
             <div className="sheets-list-container">
               {logId &&
-                getLogSheets(logId)?.map((sheet) => (
+                getSortedSheets()?.map((sheet) => (
                   <SheetCard
                     key={sheet.id}
                     data={sheet}
@@ -208,6 +255,16 @@ const LogSheets = () => {
               sheet={editSheet}
             />
           )}
+
+          <FilterSortDialog
+            open={showSort}
+            onClose={() => setShowSort(false)}
+            sortFields={sortFields}
+            sorted={sorted}
+            onSort={(s) => {
+              setSorted(s);
+            }}
+          />
 
           <ActionDialog
             message="confirm delete sheets"

@@ -55,7 +55,13 @@
 
 @media (prefers-color-scheme: light) {
   :root {
-    color: var(--clr-neu-900);
-    background-color: var(--clr-neu-100);
+    --clr-pri-500: hsl(355, 68%, 50%);
+    --clr-pri-400: hsl(355, 68%, 30%);
+
+    --clr-neu-1000: hsla(0, 0%, 87%);
+    --clr-neu-900: hsl(0, 0%, 74%);
+    --clr-neu-800: hsl(0, 0%, 64%);
+    --clr-neu-700: hsl(0, 0%, 54%);
+    --clr-neu-100: hsl(0, 0%, 10%);
   }
 }
