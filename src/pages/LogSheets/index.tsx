@@ -234,7 +234,7 @@ const LogSheets = () => {
                 onClick={handleAddModalClick}
                 compact={false}
               >
-                {t("add media")}
+                {t("add sheet")}
               </Button>
             )}
           </PageContent>
