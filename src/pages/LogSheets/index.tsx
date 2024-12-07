@@ -1,21 +1,24 @@
+import Button from "@/components/Button";
 import SheetCard from "@/components/Card/SheetCard";
+import ActionDialog from "@/components/Dialog/ActionDialog";
+import FilterSortDialog, {
+  SortedOption,
+} from "@/components/Dialog/FilterSortDialog";
 import EmptyMessage from "@/components/EmptyMessage";
 import IconButton from "@/components/IconButton";
 import AddSheetModal from "@/components/Modal/AddSheetModal";
+import EditSheetModal from "@/components/Modal/EditSheetModal";
 import PageContent from "@/components/PageContent";
+import ScrollContext from "@/context/ScrollContext";
 import useMainLayoutContext from "@/hooks/useMainLayoutContext";
+import { Sheet } from "@/store/createSheetSlice";
 import useHiLogStore from "@/store/useHiLogStore";
+import sortByField from "@/utils/sortByField";
 import isEmpty from "lodash/isEmpty";
-import {
-  useCallback,
-  useContext,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-} from "react";
+import { useCallback, useContext, useEffect, useRef, useState } from "react";
 import { FieldValues } from "react-hook-form";
 import { Trans, useTranslation } from "react-i18next";
+import { CiFilter } from "react-icons/ci";
 import {
   IoAddCircleOutline,
   IoClose,
@@ -25,16 +28,6 @@ import {
 import { Link } from "react-router-dom";
 import { useShallow } from "zustand/react/shallow";
 import "./index.css";
-import { Sheet } from "@/store/createSheetSlice";
-import ActionDialog from "@/components/Dialog/ActionDialog";
-import Button from "@/components/Button";
-import EditSheetModal from "@/components/Modal/EditSheetModal";
-import { CiFilter } from "react-icons/ci";
-import FilterSortDialog, {
-  SortedOption,
-} from "@/components/Dialog/FilterSortDialog";
-import sortByField from "@/utils/sortByField";
-import ScrollContext from "@/context/ScrollContext";
 
 const sortFields = [
   { label: "name", value: "name" },
@@ -96,8 +89,9 @@ const LogSheets = () => {
 
   const { id: logId } = selectedLog || {};
 
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   const logSheets = selectedLog ? getLogSheets(logId || "") : [];
-  
+
   const getSortedSheets = useCallback(() => {
     cardRefs.current = cardRefs.current.slice(0, logSheets.length);
     const { value: sortField, sort } = sorted || {};

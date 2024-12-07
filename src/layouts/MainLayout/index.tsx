@@ -11,7 +11,6 @@ import { Outlet, matchPath, useLocation, useNavigate } from "react-router-dom";
 import "./index.css";
 
 type NavigationTab = {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   [key: string]: {
     path: string | { pathname: string; search?: string };
     pattern: string;

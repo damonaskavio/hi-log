@@ -89,6 +89,7 @@ const Card = forwardRef<HTMLDivElement, PropsWithChildren<CardOptions>>(
 
         onPointerDown?.(e);
       },
+      // eslint-disable-next-line react-hooks/exhaustive-deps
       []
     );
 
@@ -110,6 +111,7 @@ const Card = forwardRef<HTMLDivElement, PropsWithChildren<CardOptions>>(
           onDragEnd?.();
         }
       }
+      // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [active]);
 
     return (
