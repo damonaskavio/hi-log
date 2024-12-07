@@ -43,19 +43,19 @@ export default defineConfig({
             type: "image/x-icon",
           },
           {
-            src: "/icons/icon-144x144.png",
+            src: "/icons-2/icon-144x144.png",
             sizes: "144x144",
             type: "image/png",
             purpose: "any",
           },
           {
-            src: "/icons/icon-192x192.png",
+            src: "/icons-2/icon-192x192.png",
             sizes: "192x192",
             type: "image/png",
             purpose: "maskable",
           },
           {
-            src: "/icons/icon-512x512.png",
+            src: "/icons-2/icon-512x512.png",
             sizes: "512x512",
             type: "image/png",
             purpose: "maskable",
