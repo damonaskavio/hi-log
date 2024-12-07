@@ -17,3 +17,13 @@
     transform: translateX(0);
   }
 }
+
+@keyframes leftSlideIn {
+  0% {
+    transform: translateX(-100%);
+  }
+
+  100% {
+    transform: translateX(0);
+  }
+}

@@ -3,20 +3,19 @@ import { useEffect, useRef, useState } from "react";
 type ClickEvent = {
   onClick?: (e?: React.MouseEvent<HTMLElement, MouseEvent>) => void;
   onPointerDown?: (e?: React.PointerEvent<HTMLElement>) => void;
-  onPointerUp?: (e?: React.PointerEvent<HTMLElement>) => void;
-  onMouseUp?: (e?: React.MouseEvent<HTMLElement, MouseEvent>) => void;
   onTouchStart?: (e?: React.TouchEvent<HTMLElement>) => void;
   onTouchEnd?: (e?: React.TouchEvent<HTMLElement>) => void;
   onBlur?: (e?: React.FocusEvent<HTMLElement>) => void;
-  onPointerMove?: (e?: React.PointerEvent<HTMLElement>) => void;
 };
 
 const useClickEvent = ({
   onClick,
+  onPointerMove,
   onLongPress,
   stopPropagation = false,
 }: {
   onClick?: (e: React.MouseEvent<HTMLElement, MouseEvent>) => void;
+  onPointerMove?: (e: PointerEvent) => boolean;
   onLongPress?: () => void;
   stopPropagation?: boolean;
 }) => {
@@ -24,20 +23,50 @@ const useClickEvent = ({
   const [active, setActive] = useState(false);
   const activeRef = useRef<boolean>(false);
   const lastMousePosRef = useRef<{ x: number; y: number } | null>(null);
+  const longPressRef = useRef<() => void | null>();
 
-  const listener = () => {
-    setActive(false);
+  const handlePointerUp = () => {
+    deactivate();
+  };
+
+  const handlePointerMove = (e: PointerEvent) => {
+    if (e) {
+      if (onPointerMove) {
+        const proceed = onPointerMove(e);
+
+        if (!proceed) {
+          return;
+        }
+      }
+
+      const curMouseX = e.clientX;
+      const curMouseY = e.clientY;
+
+      if (lastMousePosRef.current) {
+        const { x: prevMouseX, y: prevMouseY } = lastMousePosRef.current;
+        const distance =
+          Math.abs(curMouseX - prevMouseX) + Math.abs(curMouseY - prevMouseY);
+
+        if (distance > 1) {
+          deactivate();
+        }
+      }
+
+      lastMousePosRef.current = { x: curMouseX, y: curMouseY };
+    }
   };
 
   const activate = () => {
     if (!activeRef.current) {
-      window.addEventListener("pointerup", listener, { once: true });
+      window.addEventListener("pointerup", handlePointerUp, { once: true });
+      window.addEventListener("pointermove", handlePointerMove);
+
       setActive(true);
       activeRef.current = true;
 
-      if (onLongPress) {
+      if (longPressRef.current) {
         timerRef.current = setTimeout(() => {
-          onLongPress();
+          longPressRef.current?.();
         }, 500);
       }
     }
@@ -45,12 +74,14 @@ const useClickEvent = ({
 
   const deactivate = () => {
     if (activeRef.current) {
-      window.removeEventListener("pointerup", listener);
+      window.removeEventListener("pointerup", handlePointerUp);
+      window.removeEventListener("pointermove", handlePointerMove);
 
       if (timerRef.current) {
         clearTimeout(timerRef.current);
         timerRef.current = null;
       }
+
       setActive(false);
       activeRef.current = false;
       lastMousePosRef.current = null;
@@ -58,10 +89,21 @@ const useClickEvent = ({
   };
 
   useEffect(() => {
+    const timer = timerRef.current;
+
     return () => {
-      window.removeEventListener("pointerup", listener);
+      window.removeEventListener("pointerup", handlePointerUp);
+      window.removeEventListener("pointermove", handlePointerMove);
+
+      if (timer !== null) {
+        clearTimeout(timer);
+      }
     };
   }, []);
+
+  useEffect(() => {
+    longPressRef.current = onLongPress;
+  }, [onLongPress]);
 
   const clickEvent: ClickEvent = {
     onClick: (e) => {
@@ -85,44 +127,11 @@ const useClickEvent = ({
       activate();
     },
 
-    onPointerUp: (e) => {
-      if (e) {
-        e.stopPropagation();
-      }
-
-      lastMousePosRef.current = null;
-      deactivate();
-    },
-    onMouseUp: (e) => {
-      if (e) {
-        e.stopPropagation();
-      }
-      deactivate();
-    },
     onBlur: (e) => {
       if (e) {
         e.stopPropagation();
       }
       deactivate();
-    },
-    onPointerMove: (e) => {
-      if (e) {
-        e.stopPropagation();
-
-        const curMouseX = e.clientX;
-        const curMouseY = e.clientY;
-        if (lastMousePosRef.current) {
-          const { x: prevMouseX, y: prevMouseY } = lastMousePosRef.current;
-          const distance =
-            Math.abs(curMouseX - prevMouseX) + Math.abs(curMouseY - prevMouseY);
-
-          if (distance > 1) {
-            deactivate();
-          }
-        }
-
-        lastMousePosRef.current = { x: curMouseX, y: curMouseY };
-      }
     },
   };
 

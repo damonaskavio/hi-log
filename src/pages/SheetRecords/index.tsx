@@ -7,10 +7,15 @@ import PageContent from "@/components/PageContent";
 import useMainLayoutContext from "@/hooks/useMainLayoutContext";
 import useHiLogStore from "@/store/useHiLogStore";
 import isEmpty from "lodash/isEmpty";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useContext, useEffect, useRef, useState } from "react";
 import { FieldValues } from "react-hook-form";
 import { Trans, useTranslation } from "react-i18next";
-import { IoAddCircleOutline, IoClose, IoTrashOutline } from "react-icons/io5";
+import {
+  IoAddCircleOutline,
+  IoClose,
+  IoReorderThree,
+  IoTrashOutline,
+} from "react-icons/io5";
 import { useShallow } from "zustand/react/shallow";
 import "./index.css";
 import { Record } from "@/store/createRecordSlice";
@@ -23,6 +28,7 @@ import FilterSortDialog, {
   SortedOption,
 } from "@/components/Dialog/FilterSortDialog";
 import sortByField from "@/utils/sortByField";
+import ScrollContext from "@/context/ScrollContext";
 
 const sortFields = [
   { label: "name", value: "name" },
@@ -33,6 +39,14 @@ const sortFields = [
 
 const SheetRecords = () => {
   const { t } = useTranslation();
+  const currentDragItem = useRef<{
+    el: HTMLDivElement;
+    index: number;
+  } | null>();
+  const dragIndex = useRef<number | undefined>();
+  const cardRefs = useRef<HTMLDivElement[]>([]);
+  const [moveIndex, setMoveIndex] = useState<{ [key: number]: number }>({});
+
   const [addModalOpen, setAddModalOpen] = useState(false);
   const [editRecord, setEditRecord] = useState<Record>();
   const [checkedRecords, setCheckedRecords] = useState<string[]>([]);
@@ -40,7 +54,9 @@ const SheetRecords = () => {
   const [showTotal, setShowTotal] = useState<boolean>(true);
   const [showSort, setShowSort] = useState<boolean>(false);
   const [sorted, setSorted] = useState<SortedOption | undefined>();
-  const { setRightMenu } = useMainLayoutContext();
+  const [isReorder, setIsReorder] = useState<boolean>(false);
+  const { setRightMenu, setLeftMenu } = useMainLayoutContext();
+  const isListScrolling = useContext(ScrollContext);
 
   const [
     selectedLog,
@@ -49,6 +65,7 @@ const SheetRecords = () => {
     addRecord,
     updateRecord,
     deleteRecords,
+    orderRecord,
   ] = useHiLogStore(
     useShallow((state) => [
       state.selectedLog,
@@ -57,21 +74,20 @@ const SheetRecords = () => {
       state.addRecord,
       state.updateRecord,
       state.deleteRecords,
+      state.orderRecord,
     ])
   );
 
   const { id: logId } = selectedLog || {};
   const { id: sheetId, totals } = selectedSheet || {};
 
-  const sheetRecords =
-    selectedLog && selectedSheet
-      ? getRecords({
-          logId: selectedLog.id,
-          sheetId: selectedSheet.id,
-        })
-      : [];
+  const sheetRecords = getRecords({
+    logId: selectedLog?.id,
+    sheetId: selectedSheet?.id,
+  });
 
-  const getSortedRecords = () => {
+  const getSortedRecords = useCallback(() => {
+    cardRefs.current = cardRefs.current.slice(0, sheetRecords.length);
     const { value: sortField, sort } = sorted || {};
 
     if (sortField && sort) {
@@ -82,7 +98,7 @@ const SheetRecords = () => {
     }
 
     return sheetRecords;
-  };
+  }, [sheetRecords, sorted]);
 
   const isRecordsEmpty = isEmpty(sheetRecords);
   const isCheckedRecordsEmpty = isEmpty(checkedRecords);
@@ -139,7 +155,9 @@ const SheetRecords = () => {
   };
 
   const handleRecordChecked = (recordId: string) => {
-    setCheckedRecords([...checkedRecords, recordId]);
+    if (!isListScrolling) {
+      setCheckedRecords([...checkedRecords, recordId]);
+    }
   };
 
   const handleRecordUnchecked = (recordId: string) => {
@@ -164,6 +182,123 @@ const SheetRecords = () => {
 
   const handleShowSortClick = () => {
     setShowSort(true);
+  };
+
+  const handleItemPointerMove = (e: React.PointerEvent<HTMLDivElement>) => {
+    const draggedItem = currentDragItem.current;
+    const index = dragIndex.current;
+
+    if (draggedItem && index !== undefined) {
+      const draggedIndex = draggedItem.index;
+
+      const cards = cardRefs.current;
+
+      let prevItem: HTMLDivElement | undefined;
+      let nextItem: HTMLDivElement | undefined;
+
+      let movedDown: boolean | undefined;
+
+      if (index > draggedIndex) {
+        movedDown = true;
+      }
+
+      if (index < draggedIndex) {
+        movedDown = false;
+      }
+
+      let prevIndex = index - 1;
+      let nextIndex = index + 1;
+
+      if (movedDown === true) {
+        prevIndex += 1;
+      }
+
+      if (movedDown === false) {
+        nextIndex -= 1;
+      }
+
+      if (
+        prevIndex >= 0 &&
+        prevIndex < cards.length &&
+        prevIndex !== draggedIndex
+      ) {
+        prevItem = cards[prevIndex];
+      }
+
+      if (nextIndex < cards.length && nextIndex !== draggedIndex) {
+        nextItem = cards[nextIndex];
+      }
+
+      if (prevItem) {
+        const { y: prevY, height: prevHeight } =
+          prevItem.getBoundingClientRect();
+
+        if (e.clientY < prevY + prevHeight / 2) {
+          setMoveIndex((indices) => {
+            const newIndices = { ...indices };
+
+            if (newIndices[prevIndex]) {
+              delete newIndices[prevIndex];
+            } else {
+              newIndices[prevIndex] = 1;
+            }
+
+            return newIndices;
+          });
+
+          dragIndex.current = index - 1;
+        }
+      }
+
+      if (nextItem) {
+        const { y: nextY, height: nextHeight } =
+          nextItem.getBoundingClientRect();
+
+        if (e.clientY > nextY + nextHeight / 2) {
+          setMoveIndex((indices) => {
+            const newIndices = { ...indices };
+
+            if (newIndices[nextIndex]) {
+              delete newIndices[nextIndex];
+            } else {
+              newIndices[nextIndex] = -1;
+            }
+
+            return newIndices;
+          });
+
+          dragIndex.current = index + 1;
+        }
+      }
+    }
+  };
+
+  const handleDragStart = (el: HTMLDivElement, index: number) => {
+    currentDragItem.current = { el, index };
+    dragIndex.current = index;
+  };
+
+  const handleDragEnd = () => {
+    const draggedItem = currentDragItem.current;
+
+    if (draggedItem) {
+      const toIndex = dragIndex.current;
+      const fromIndex = draggedItem.index;
+
+      if (
+        toIndex !== undefined &&
+        fromIndex !== undefined &&
+        toIndex !== fromIndex &&
+        logId &&
+        sheetId
+      ) {
+        orderRecord({ logId, sheetId, fromIndex, toIndex });
+      }
+
+      setMoveIndex([]);
+      dragIndex.current = undefined;
+      currentDragItem.current = null;
+    }
   };
 
   const renderRightMenu = useCallback(() => {
@@ -193,15 +328,47 @@ const SheetRecords = () => {
           />,
         ];
       }
+
+      if (isReorder) {
+        menu.splice(0, 1);
+      }
     }
 
     setRightMenu(menu);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isRecordsEmpty, checkedRecords]);
+  }, [isRecordsEmpty, checkedRecords, isReorder]);
 
   useEffect(() => {
     renderRightMenu();
   }, [renderRightMenu]);
+
+  const renderLeftMenu = useCallback(() => {
+    let menu: JSX.Element[] = [];
+
+    if (
+      !isRecordsEmpty &&
+      sheetRecords.length > 1 &&
+      (!sorted || sorted.value === "")
+    ) {
+      if (isCheckedRecordsEmpty) {
+        menu = [
+          <IconButton
+            icon={isReorder ? <IoClose /> : <IoReorderThree />}
+            onClick={() => {
+              setIsReorder(!isReorder);
+            }}
+          />,
+        ];
+      }
+    }
+
+    setLeftMenu(menu);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isRecordsEmpty, checkedRecords, isReorder, sheetRecords, sorted]);
+
+  useEffect(() => {
+    renderLeftMenu();
+  }, [renderLeftMenu]);
 
   return (
     <div className="sheet-records-root">
@@ -211,8 +378,13 @@ const SheetRecords = () => {
 
           <PageContent className="sheet-records-content">
             <div className="records-list-container">
-              {getSortedRecords().map((record) => (
+              {getSortedRecords().map((record, index) => (
                 <RecordCard
+                  ref={(ref) => {
+                    if (ref) {
+                      cardRefs.current[index] = ref;
+                    }
+                  }}
                   key={record.id}
                   data={record}
                   onEdit={handleEditModalOpen}
@@ -220,6 +392,13 @@ const SheetRecords = () => {
                   onChecked={handleRecordChecked}
                   onUnchecked={handleRecordUnchecked}
                   hasChecked={!isCheckedRecordsEmpty}
+                  reorder={isReorder}
+                  onDragStart={(el) => {
+                    handleDragStart(el, index);
+                  }}
+                  onDragEnd={handleDragEnd}
+                  onPointerMove={handleItemPointerMove}
+                  offsetY={moveIndex[index]}
                 />
               ))}
             </div>

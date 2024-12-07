@@ -8,6 +8,13 @@ import { MediaSlice } from "./createMediaSlice";
 
 export interface SharedSlice {
   createLog: (args: { name: string; desc?: string; tags?: string[] }) => void;
+  addSheet: (args: {
+    logId: string;
+    name: string;
+    tags?: string[];
+    desc?: string;
+    sheetDate?: Date;
+  }) => void;
   addRecord: (args: {
     logId: string;
     sheetId: string;
@@ -64,6 +71,28 @@ const createSharedSlice: StateCreator<
       name: i18n.t("default log sheet"),
       desc: i18n.t("default log sheet desc"),
     });
+  },
+  addSheet: ({ logId, name, tags, desc, sheetDate }) => {
+    let sheets = get().sheets;
+    const logSheets = [...(sheets[logId] || [])];
+    const sheetIds = logSheets.map((ls) => ({ id: ls.id }));
+
+    const uuid = getUniqueUUID(sheetIds, "id");
+    logSheets.push({
+      id: uuid,
+      name,
+      tags,
+      updatedAt: new Date(),
+      media: [],
+      desc,
+      totals: {},
+      sheetDate,
+    });
+
+    sheets = { ...sheets, [logId]: logSheets };
+
+    const records = get().records;
+    set(() => ({ sheets, records: { ...records, [`${logId}_${uuid}`]: [] } }));
   },
   addRecord: ({
     logId,

@@ -9,7 +9,7 @@ import useHiLogStore from "@/store/useHiLogStore";
 import getBase64 from "@/utils/getBase64";
 import { useVirtualizer } from "@tanstack/react-virtual";
 import isEmpty from "lodash/isEmpty";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useContext, useEffect, useRef, useState } from "react";
 import { Trans, useTranslation } from "react-i18next";
 import { IoAddCircleOutline, IoClose, IoTrashOutline } from "react-icons/io5";
 import { Link } from "react-router-dom";
@@ -17,6 +17,7 @@ import { useShallow } from "zustand/react/shallow";
 import "./index.css";
 import ImageDialog from "@/components/Dialog/ImageDialog";
 import ActionDialog from "@/components/Dialog/ActionDialog";
+import ScrollContext from "@/context/ScrollContext";
 
 const SheetMedia = () => {
   const { t } = useTranslation();
@@ -28,6 +29,7 @@ const SheetMedia = () => {
   const cameraRef = useRef<HTMLInputElement>(null);
   const parentRef = useRef(null);
   const { setRightMenu } = useMainLayoutContext();
+  const isListScrolling = useContext(ScrollContext);
 
   const [selectedLog, selectedSheet, addMedia, getMedias, deleteMedias] =
     useHiLogStore(
@@ -92,7 +94,9 @@ const SheetMedia = () => {
   });
 
   const handleMediaChecked = (mediaId: string) => {
-    setCheckedMedias([...checkedMedias, mediaId]);
+    if (!isListScrolling) {
+      setCheckedMedias([...checkedMedias, mediaId]);
+    }
   };
 
   const handleMediaUnchecked = (mediaId: string) => {
@@ -128,7 +132,10 @@ const SheetMedia = () => {
             icon={<IoClose />}
             onClick={() => handleMediaUncheckAll()}
           />,
-          <IconButton icon={<IoTrashOutline />} onClick={() => setShowDelete(true)} />,
+          <IconButton
+            icon={<IoTrashOutline />}
+            onClick={() => setShowDelete(true)}
+          />,
         ];
       }
     }

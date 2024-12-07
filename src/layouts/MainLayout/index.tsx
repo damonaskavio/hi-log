@@ -1,4 +1,6 @@
 import LayoutHeader from "@/components/PageHeader/LayoutHeader";
+import ScrollContext from "@/context/ScrollContext";
+import useDebounce from "@/hooks/useDebounce";
 import { MainLayoutContextType } from "@/hooks/useMainLayoutContext";
 import { useState } from "react";
 import { BiSpreadsheet } from "react-icons/bi";
@@ -38,6 +40,8 @@ const MainLayout = () => {
   const { pathname } = useLocation();
   const [rightMenu, setRightMenu] = useState<JSX.Element[]>([]);
   const [leftMenu, setLeftMenu] = useState<JSX.Element[]>([]);
+  const [isScrolling, setIsScrolling] = useState<boolean>(false);
+
   const navigate = useNavigate();
 
   const tabs: NavigationTab = {
@@ -106,6 +110,15 @@ const MainLayout = () => {
     );
   };
 
+  const debounceStopScroll = useDebounce(() => {
+    setIsScrolling(false);
+  }, 500);
+
+  const handleOnScroll = () => {
+    setIsScrolling(true);
+    debounceStopScroll();
+  };
+
   return (
     <div className="sheet-layout-root">
       <LayoutHeader
@@ -114,12 +127,14 @@ const MainLayout = () => {
         title={getTitle()}
       />
 
-      <div className="content">
-        <Outlet
-          context={
-            { setRightMenu, setLeftMenu } satisfies MainLayoutContextType
-          }
-        />
+      <div className="content" onScroll={handleOnScroll}>
+        <ScrollContext.Provider value={isScrolling}>
+          <Outlet
+            context={
+              { setRightMenu, setLeftMenu } satisfies MainLayoutContextType
+            }
+          />
+        </ScrollContext.Provider>
       </div>
       <div className="bottom-navigation">
         {renderNavigation("logs")}

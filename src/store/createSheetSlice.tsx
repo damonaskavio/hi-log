@@ -21,13 +21,6 @@ export interface SheetSlice {
   selectedSheet: Sheet | null;
   sheets: SheetList;
   // Actions
-  addSheet: (args: {
-    logId: string;
-    name: string;
-    tags?: string[];
-    desc?: string;
-    sheetDate?: Date;
-  }) => void;
   updateSheet: (args: {
     logId: string;
     sheetId: string;
@@ -44,6 +37,11 @@ export interface SheetSlice {
   }) => void;
   setSelectedSheet: (sheet?: Sheet) => void;
   checkSelectedSheet: (args: { logId: string; sheetId: string }) => void;
+  orderSheet: (args: {
+    logId: string;
+    fromIndex: number;
+    toIndex: number;
+  }) => void;
   getSheet: (logId: string, sheetId: string) => Sheet | null;
   getLogSheets: (logId: string) => Sheet[];
   getLatestLogSheet: (logId: string) => Sheet;
@@ -56,27 +54,6 @@ const createSheetSlice: StateCreator<SheetSlice, [], [], SheetSlice> = (
 ) => ({
   selectedSheet: null,
   sheets: {},
-  addSheet: ({ logId, name, tags, desc, sheetDate }) => {
-    let sheets = get().sheets;
-    const logSheets = [...(sheets[logId] || [])];
-    const sheetIds = logSheets.map((ls) => ({ id: ls.id }));
-
-    const uuid = getUniqueUUID(sheetIds, "id");
-    logSheets.push({
-      id: uuid,
-      name,
-      tags,
-      updatedAt: new Date(),
-      media: [],
-      desc,
-      totals: {},
-      sheetDate,
-    });
-
-    sheets = { ...sheets, [logId]: logSheets };
-
-    set(() => ({ sheets }));
-  },
   updateSheet: ({ logId, sheetId, name, desc, sheetDate }) => {
     let sheets = get().sheets;
     const logSheets = [...(sheets[logId] || [])];
@@ -142,6 +119,18 @@ const createSheetSlice: StateCreator<SheetSlice, [], [], SheetSlice> = (
       const sheet = sheets.find((s) => s.id === sheetId);
       get().setSelectedSheet(sheet);
     }
+  },
+  orderSheet: ({ logId, fromIndex, toIndex }) => {
+    let sheets = get().sheets;
+    const logSheets = [...(sheets[logId] || [])];
+
+    const element = logSheets[fromIndex];
+    logSheets.splice(fromIndex, 1);
+    logSheets.splice(toIndex, 0, element);
+
+    sheets = { ...sheets, [logId]: logSheets };
+
+    set(() => ({ sheets }));
   },
   getSheet: (logId, sheetId) => {
     const logSheets = get().sheets[logId];

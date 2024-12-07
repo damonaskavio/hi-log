@@ -26,7 +26,13 @@ export interface RecordSlice {
     sheetId: string;
     recordId: string;
   }) => Record | null;
-  getRecords: (args: { logId: string; sheetId: string }) => Record[];
+  getRecords: (args: { logId?: string; sheetId?: string }) => Record[];
+  orderRecord: (args: {
+    logId: string;
+    sheetId: string;
+    fromIndex: number;
+    toIndex: number;
+  }) => void;
   resetRecords: () => void;
 }
 
@@ -46,7 +52,16 @@ const createRecordSlice: StateCreator<RecordSlice, [], [], RecordSlice> = (
   getRecords: ({ logId, sheetId }) => {
     return get().records[`${logId}_${sheetId}`] || [];
   },
+  orderRecord: ({ logId, sheetId, fromIndex, toIndex }) =>
+    set((state) => {
+      const record = [...(state.records[`${logId}_${sheetId}`] || [])];
 
+      const element = record[fromIndex];
+      record.splice(fromIndex, 1);
+      record.splice(toIndex, 0, element);
+
+      return { records: { ...state.records, [`${logId}_${sheetId}`]: record } };
+    }),
   resetRecords: () => set(() => ({ records: {} })),
 });
 
