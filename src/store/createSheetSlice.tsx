@@ -88,7 +88,11 @@ const createSheetSlice: StateCreator<SheetSlice, [], [], SheetSlice> = (
 
       if (additive) {
         const prevTotal = totals[currency] || 0;
-        totals[currency] = prevTotal + total;
+        const newTotal = prevTotal + total;
+
+        if (!Number.isNaN(newTotal)) {
+          totals[currency] = prevTotal + total;
+        }
       } else {
         totals[currency] = total;
       }
