@@ -99,11 +99,19 @@ const SheetCard = forwardRef<HTMLDivElement, SheetCardOptions>(
             <div className="totals-left">{t("totals")}</div>
             <div className="totals-right">
               {!isEmpty(totals) ? (
-                Object.keys(totals).map((key) => (
-                  <p key={key}>{`${CurrencySymbolMap[key]} ${totals[
-                    key
-                  ].toFixed(2)}`}</p>
-                ))
+                Object.keys(totals).map((key) => {
+                  const total = totals[key];
+
+                  if (total === 0) {
+                    return;
+                  }
+
+                  return (
+                    <p key={key}>{`${CurrencySymbolMap[key]} ${total.toFixed(
+                      2
+                    )}`}</p>
+                  );
+                })
               ) : (
                 <p>-</p>
               )}
