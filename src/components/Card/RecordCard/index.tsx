@@ -39,7 +39,7 @@ const RecordCard = forwardRef<HTMLDivElement, RecordCardOptions>(
       onDragEnd,
       offsetY,
     },
-    ref
+    ref,
   ) => {
     const [loose, setLoose] = useState(false);
 
@@ -94,7 +94,7 @@ const RecordCard = forwardRef<HTMLDivElement, RecordCardOptions>(
 
             <div className="currency-container">
               <div>{CurrencySymbolMap[currency]}</div>
-              <div>{amount.toFixed(2)}</div>
+              <div>{(amount ?? 0).toFixed(2)}</div>
             </div>
           </div>
         </Card>
@@ -105,7 +105,7 @@ const RecordCard = forwardRef<HTMLDivElement, RecordCardOptions>(
         </div>
       </div>
     );
-  }
+  },
 );
 
 export default RecordCard;

@@ -42,9 +42,9 @@ const LogCard = forwardRef<HTMLDivElement, LogCardProps>(
       onDragEnd,
       offsetY,
     },
-    ref
+    ref,
   ) => {
-    const {t} = useTranslation();
+    const { t } = useTranslation();
     const { id, name, updatedAt, desc } = data;
 
     const [setSelectedLog, setSelectedSheet, getLogSheets] = useHiLogStore(
@@ -52,7 +52,7 @@ const LogCard = forwardRef<HTMLDivElement, LogCardProps>(
         state.setSelectedLog,
         state.setSelectedSheet,
         state.getLogSheets,
-      ]
+      ],
     );
 
     const [totals, setTotals] = useState<{ [key: string]: number }>();
@@ -126,9 +126,9 @@ const LogCard = forwardRef<HTMLDivElement, LogCardProps>(
                   }
 
                   return (
-                    <p key={key}>{`${CurrencySymbolMap[key]} ${total.toFixed(
-                      2
-                    )}`}</p>
+                    <p key={key}>{`${CurrencySymbolMap[key]} ${(
+                      total ?? 0
+                    ).toFixed(2)}`}</p>
                   );
                 })
               ) : (
@@ -143,7 +143,7 @@ const LogCard = forwardRef<HTMLDivElement, LogCardProps>(
         </div>
       </div>
     );
-  }
+  },
 );
 
 export default LogCard;

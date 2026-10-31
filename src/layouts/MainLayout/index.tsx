@@ -4,7 +4,7 @@ import useDebounce from "@/hooks/useDebounce";
 import { MainLayoutContextType } from "@/hooks/useMainLayoutContext";
 import { useState } from "react";
 import { BiSpreadsheet } from "react-icons/bi";
-import { FaImage } from "react-icons/fa6";
+import { FaImage, FaPeopleGroup } from "react-icons/fa6";
 import { LuFileSpreadsheet } from "react-icons/lu";
 import { TbListDetails } from "react-icons/tb";
 import { Outlet, matchPath, useLocation, useNavigate } from "react-router-dom";
@@ -63,10 +63,10 @@ const MainLayout = () => {
       title: "sheet records",
     },
     media: {
-      icon: <FaImage />,
-      path: "/media",
-      pattern: "/media",
-      title: "sheet media",
+      icon: <FaPeopleGroup />,
+      path: "/people",
+      pattern: "/people",
+      title: "people",
     },
   };
 
@@ -139,7 +139,7 @@ const MainLayout = () => {
         {renderNavigation("logs")}
         {renderNavigation("list")}
         {renderNavigation("records")}
-        {renderNavigation("media")}
+        {/* {renderNavigation("media")} */}
       </div>
     </div>
   );

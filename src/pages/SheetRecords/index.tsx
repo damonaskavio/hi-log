@@ -75,7 +75,7 @@ const SheetRecords = () => {
       state.updateRecord,
       state.deleteRecords,
       state.orderRecord,
-    ])
+    ]),
   );
 
   const { id: logId } = selectedLog || {};
@@ -425,14 +425,14 @@ const SheetRecords = () => {
               </p>
               <div className="content">
                 <div className="content-left">{`${sheetRecords.length} ${t(
-                  "records"
+                  "records",
                 )}`}</div>
                 <div className="content-right">
                   {totals &&
                     Object.keys(totals).map((key) => (
-                      <p key={key}>{`${CurrencySymbolMap[key]} ${totals[
-                        key
-                      ].toFixed(2)}`}</p>
+                      <p key={key}>{`${CurrencySymbolMap[key]} ${(
+                        totals[key] ?? 0
+                      ).toFixed(2)}`}</p>
                     ))}
                 </div>
               </div>

@@ -12,6 +12,7 @@ import Select from "@/components/Select";
 import CurrencySymbolMap from "@/utils/currency";
 import DateTimePicker from "@/components/DateTimePicker";
 import MultilineInput from "@/components/MultilineInput";
+import MultiSelect from "@/components/MultiSelect";
 
 export type AddRecordModalOptions = {
   open?: boolean;
@@ -22,7 +23,7 @@ export type AddRecordModalOptions = {
 const AddRecordModal = ({ open, onClose, onSubmit }: AddRecordModalOptions) => {
   const { t } = useTranslation();
 
-  const { register, handleSubmit, reset } = useForm({
+  const { register, handleSubmit, reset, setValue } = useForm({
     defaultValues: {
       name: "",
       desc: "",
@@ -88,6 +89,10 @@ const AddRecordModal = ({ open, onClose, onSubmit }: AddRecordModalOptions) => {
               }
             />
           </div>
+
+          {/* <div>
+            <MultiSelect setValue={setValue} />
+          </div> */}
         </Form>
         <Spacer />
         <Button onClick={onSubmitClick}>{t("add")}</Button>

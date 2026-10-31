@@ -4,14 +4,17 @@ const en_US = {
   "log sheets": "Log Sheets",
   "sheet records": "Sheet Records",
   "sheet media": "Sheet Media",
+  people: "People",
   // button
   "add log": "Add New Log",
   "add sheet": "Add New Log Sheet",
   "add record": "Add New Record",
   "add media": "Add Media",
+  "add person": "Add Person",
   "edit log": "Edit Log",
   "edit sheet": "Edit Sheet",
   "edit record": "Edit Record",
+  "edit person": "Edit Person",
   "choose media": "Choose from Gallery",
   "capture media": "Take a Photo",
   cancel: "Cancel",
@@ -38,6 +41,8 @@ const en_US = {
     "It seems like you don't have any records. Would you like to make one?",
   "media empty":
     "It seems like you don't have any media. Would you like to add one?",
+  "people empty":
+    "It seems like you don't have any people. Would you like to add one?",
   // missing
   "no log selected":
     "You have not selected a log.\nPlease select one from <0>Logs</0>.",

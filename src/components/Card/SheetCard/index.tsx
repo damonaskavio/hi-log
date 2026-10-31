@@ -43,7 +43,7 @@ const SheetCard = forwardRef<HTMLDivElement, SheetCardOptions>(
       onDragEnd,
       offsetY,
     },
-    ref
+    ref,
   ) => {
     const { t } = useTranslation();
     const { name, desc, totals, updatedAt, sheetDate } = data;
@@ -51,7 +51,7 @@ const SheetCard = forwardRef<HTMLDivElement, SheetCardOptions>(
     const navigate = useNavigate();
 
     const [selectedLog, setSelectedSheet] = useHiLogStore(
-      useShallow((state) => [state.selectedLog, state.setSelectedSheet])
+      useShallow((state) => [state.selectedLog, state.setSelectedSheet]),
     );
 
     const handleClick = () => {
@@ -107,9 +107,9 @@ const SheetCard = forwardRef<HTMLDivElement, SheetCardOptions>(
                   }
 
                   return (
-                    <p key={key}>{`${CurrencySymbolMap[key]} ${total.toFixed(
-                      2
-                    )}`}</p>
+                    <p key={key}>{`${CurrencySymbolMap[key]} ${(
+                      total ?? 0
+                    ).toFixed(2)}`}</p>
                   );
                 })
               ) : (
@@ -130,7 +130,7 @@ const SheetCard = forwardRef<HTMLDivElement, SheetCardOptions>(
         </div>
       </div>
     );
-  }
+  },
 );
 
 export default SheetCard;
