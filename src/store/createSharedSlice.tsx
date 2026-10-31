@@ -5,6 +5,7 @@ import { LogSlice } from "./createLogSlice";
 import { RecordSlice } from "./createRecordSlice";
 import { SheetSlice } from "./createSheetSlice";
 import { MediaSlice } from "./createMediaSlice";
+import { PeopleSlice } from "./createPeopleSlice";
 
 export interface SharedSlice {
   createLog: (args: { name: string; desc?: string; tags?: string[] }) => void;
@@ -25,6 +26,7 @@ export interface SharedSlice {
     recordDate: Date;
     recordTime: string;
   }) => void;
+  addPerson: (args: { logId: string; name: string }) => void;
   updateRecord: (args: {
     logId: string;
     sheetId: string;
@@ -35,6 +37,11 @@ export interface SharedSlice {
     currency: string;
     recordDate: Date;
     recordTime: string;
+  }) => void;
+  updatePerson: (args: {
+    logId: string;
+    personId: string;
+    name: string;
   }) => void;
   deleteRecords: (args: {
     recordIds: string[];
@@ -47,7 +54,7 @@ export interface SharedSlice {
 }
 
 const createSharedSlice: StateCreator<
-  LogSlice & SheetSlice & RecordSlice & MediaSlice & SharedSlice,
+  LogSlice & SheetSlice & RecordSlice & MediaSlice & PeopleSlice & SharedSlice,
   [],
   [],
   SharedSlice
@@ -134,6 +141,21 @@ const createSharedSlice: StateCreator<
 
     set(() => ({ records }));
   },
+  addPerson: ({ logId, name }) => {
+    let people = get().people;
+
+    const logPeople = [...(people[logId] || [])];
+    const uuid = getUniqueUUID(
+      logPeople.map((lp) => ({ id: lp.id })),
+      "id"
+    );
+
+    logPeople.push({ id: uuid, name });
+
+    people = { ...people, [logId]: logPeople };
+
+    set(() => ({ people }));
+  },
   updateRecord: ({
     logId,
     sheetId,
@@ -174,6 +196,24 @@ const createSharedSlice: StateCreator<
       });
 
       set(() => ({ records }));
+    }
+  },
+  updatePerson: ({ logId, personId, name }) => {
+    let people = get().people;
+    const logPeople = [...(people[logId] || [])];
+
+    const personIndex = logPeople.findIndex((p) => p.id === personId);
+
+    if (personIndex > -1) {
+      const person = logPeople[personIndex];
+      logPeople[personIndex] = {
+        ...person,
+        name,
+      };
+
+      people = { ...people, [logId]: logPeople };
+
+      set(() => ({ people }));
     }
   },
   deleteRecords: ({ recordIds, logId, sheetId }) => {
@@ -262,6 +302,7 @@ const createSharedSlice: StateCreator<
     get().resetSheets();
     get().resetRecords();
     get().resetMedias();
+    get().resetPeople();
     set(() => ({
       selectedLog: undefined,
       selectedSheet: undefined,
