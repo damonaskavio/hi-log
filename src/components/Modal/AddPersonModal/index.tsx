@@ -17,7 +17,7 @@ export type AddPersonModalOptions = {
 const AddPersonModal = ({ open, onClose, onSubmit }: AddPersonModalOptions) => {
   const { t } = useTranslation();
 
-  const { register, handleSubmit, reset, watch } = useForm({
+  const { register, handleSubmit, reset } = useForm({
     defaultValues: {
       name: "",
       desc: "",

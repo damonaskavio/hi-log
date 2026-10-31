@@ -4,13 +4,11 @@ import { FieldValues, useForm } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 import Modal from "..";
 
-import DateTimePicker from "@/components/DateTimePicker";
 import Form from "@/components/Form";
 import PageContent from "@/components/PageContent";
 import Spacer from "@/components/Spacer";
-import { Sheet } from "@/store/createSheetSlice";
-import { useEffect } from "react";
 import { Person } from "@/store/createPeopleSlice";
+import { useEffect } from "react";
 
 export type EditPersonModalOptions = {
   open?: boolean;
@@ -27,7 +25,7 @@ const EditPersonModal = ({
 }: EditPersonModalOptions) => {
   const { t } = useTranslation();
 
-  const { register, handleSubmit, reset, watch } = useForm<{
+  const { register, handleSubmit, reset } = useForm<{
     name: string;
   }>({
     defaultValues: { name: "" },

@@ -1,11 +1,11 @@
-import { InputHTMLAttributes, useState } from "react";
+import classNames from "classnames";
+import { useState } from "react";
 import {
   FieldValues,
   UseFormRegisterReturn,
   UseFormSetValue,
 } from "react-hook-form";
 import "./index.css";
-import classNames from "classnames";
 
 export interface MultiSelectOptions {
   options?: { value: string; label: string }[];
@@ -20,7 +20,7 @@ interface Selectable {
   onClick: () => void;
 }
 
-const Selectable = ({ selected, label, onClick }: Selectable) => {
+const Selectable = ({ label, onClick }: Selectable) => {
   return <div onClick={onClick}>{label}</div>;
 };
 
