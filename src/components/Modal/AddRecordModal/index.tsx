@@ -4,15 +4,14 @@ import { FieldValues, useForm } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 import Modal from "..";
 
-import Form from "@/components/Form";
-import PageContent from "@/components/PageContent";
-import Spacer from "@/components/Spacer";
-import "./index.css";
-import Select from "@/components/Select";
-import CurrencySymbolMap from "@/utils/currency";
 import DateTimePicker from "@/components/DateTimePicker";
+import Form from "@/components/Form";
 import MultilineInput from "@/components/MultilineInput";
-import MultiSelect from "@/components/MultiSelect";
+import PageContent from "@/components/PageContent";
+import Select from "@/components/Select";
+import Spacer from "@/components/Spacer";
+import CurrencySymbolMap from "@/utils/currency";
+import "./index.css";
 
 export type AddRecordModalOptions = {
   open?: boolean;
@@ -23,7 +22,7 @@ export type AddRecordModalOptions = {
 const AddRecordModal = ({ open, onClose, onSubmit }: AddRecordModalOptions) => {
   const { t } = useTranslation();
 
-  const { register, handleSubmit, reset, setValue } = useForm({
+  const { register, handleSubmit, reset } = useForm({
     defaultValues: {
       name: "",
       desc: "",

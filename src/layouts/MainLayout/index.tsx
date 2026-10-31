@@ -4,7 +4,7 @@ import useDebounce from "@/hooks/useDebounce";
 import { MainLayoutContextType } from "@/hooks/useMainLayoutContext";
 import { useState } from "react";
 import { BiSpreadsheet } from "react-icons/bi";
-import { FaImage, FaPeopleGroup } from "react-icons/fa6";
+import { FaPeopleGroup } from "react-icons/fa6";
 import { LuFileSpreadsheet } from "react-icons/lu";
 import { TbListDetails } from "react-icons/tb";
 import { Outlet, matchPath, useLocation, useNavigate } from "react-router-dom";
