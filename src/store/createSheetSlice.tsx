@@ -8,8 +8,9 @@ export type Sheet = {
   tags?: string[];
   desc?: string;
   media: string[];
-  totals: { [key: string]: number };
 };
+
+export type Totals = { [key: string]: number };
 
 export type SheetList = {
   [key: string]: Sheet[];
@@ -27,13 +28,6 @@ export interface SheetSlice {
     desc?: string;
     sheetDate?: Date;
   }) => void;
-  updateSheetTotal: (args: {
-    logId: string;
-    sheetId: string;
-    currency: string;
-    total: number;
-    additive?: boolean;
-  }) => void;
   setSelectedSheet: (sheet?: Sheet) => void;
   checkSelectedSheet: (args: { logId: string; sheetId: string }) => void;
   orderSheet: (args: {
@@ -49,7 +43,7 @@ export interface SheetSlice {
 
 const createSheetSlice: StateCreator<SheetSlice, [], [], SheetSlice> = (
   set,
-  get
+  get,
 ) => ({
   selectedSheet: null,
   sheets: {},
@@ -67,40 +61,6 @@ const createSheetSlice: StateCreator<SheetSlice, [], [], SheetSlice> = (
         desc,
         updatedAt: new Date(),
         sheetDate,
-      };
-
-      sheets = { ...sheets, [logId]: logSheets };
-
-      set(() => ({ sheets }));
-
-      get().checkSelectedSheet({ logId, sheetId });
-    }
-  },
-  updateSheetTotal: ({ logId, sheetId, currency, total, additive }) => {
-    let sheets = get().sheets;
-    const logSheets = [...(sheets[logId] || [])];
-
-    const sheetIndex = logSheets.findIndex((sheet) => sheet.id === sheetId);
-
-    if (sheetIndex > -1) {
-      const sheet = logSheets[sheetIndex];
-      const totals = { ...sheet.totals };
-
-      if (additive) {
-        const prevTotal = totals[currency] || 0;
-        const newTotal = prevTotal + total;
-
-        if (!Number.isNaN(newTotal)) {
-          totals[currency] = prevTotal + total;
-        }
-      } else {
-        totals[currency] = total;
-      }
-
-      logSheets[sheetIndex] = {
-        ...sheet,
-        totals,
-        updatedAt: new Date(),
       };
 
       sheets = { ...sheets, [logId]: logSheets };

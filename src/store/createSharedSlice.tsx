@@ -3,11 +3,12 @@ import getUniqueUUID from "@/utils/getNonDuplicateUUID";
 import { StateCreator } from "zustand";
 import { LogSlice } from "./createLogSlice";
 import { RecordSlice } from "./createRecordSlice";
-import { SheetSlice } from "./createSheetSlice";
+import { SheetSlice, Totals } from "./createSheetSlice";
 import { MediaSlice } from "./createMediaSlice";
 import { PeopleSlice } from "./createPeopleSlice";
 
 export interface SharedSlice {
+  getSheetTotals: (logId?: string, sheetId?: string) => Totals;
   createLog: (args: { name: string; desc?: string; tags?: string[] }) => void;
   addSheet: (args: {
     logId: string;
@@ -59,10 +60,27 @@ const createSharedSlice: StateCreator<
   [],
   SharedSlice
 > = (set, get) => ({
+  getSheetTotals: (logId, sheetId) => {
+    const logSheets = logId ? get().sheets[logId] : undefined;
+    const sheet = logSheets?.find((ls) => ls.id === sheetId);
+    console.log("sheet", sheetId, sheet);
+    if (sheet) {
+      const records = get().getRecords({ logId, sheetId });
+      const totals: Totals = {};
+
+      records.map(({ amount, currency }) => {
+        totals[currency] = (totals[currency] ?? 0) + amount;
+      });
+
+      return totals;
+    }
+
+    return {};
+  },
   createLog: ({ name, desc, tags }) => {
     const uuid = getUniqueUUID(
       get().logs.map((l) => ({ id: l.id })),
-      "id"
+      "id",
     );
 
     get().addLog({
@@ -92,7 +110,6 @@ const createSharedSlice: StateCreator<
       updatedAt: new Date(),
       media: [],
       desc,
-      totals: {},
       sheetDate,
     });
 
@@ -115,12 +132,12 @@ const createSharedSlice: StateCreator<
     const sheetRecords = [...(records[`${logId}_${sheetId}`] || [])];
     const uuid = getUniqueUUID(
       sheetRecords.map((sr) => ({ id: sr.id })),
-      "id"
+      "id",
     );
 
     sheetRecords.push({
       name,
-      amount,
+      amount: amount || 0,
       currency,
       desc,
       id: uuid,
@@ -131,14 +148,6 @@ const createSharedSlice: StateCreator<
 
     records = { ...records, [`${logId}_${sheetId}`]: sheetRecords };
 
-    get().updateSheetTotal({
-      logId,
-      sheetId,
-      currency,
-      total: amount,
-      additive: true,
-    });
-
     set(() => ({ records }));
   },
   addPerson: ({ logId, name }) => {
@@ -147,7 +156,7 @@ const createSharedSlice: StateCreator<
     const logPeople = [...(people[logId] || [])];
     const uuid = getUniqueUUID(
       logPeople.map((lp) => ({ id: lp.id })),
-      "id"
+      "id",
     );
 
     logPeople.push({ id: uuid, name });
@@ -177,7 +186,7 @@ const createSharedSlice: StateCreator<
       sheetRecords[recordIndex] = {
         ...record,
         name,
-        amount,
+        amount: amount || 0,
         currency,
         desc,
         recordDate,
@@ -186,14 +195,6 @@ const createSharedSlice: StateCreator<
       };
 
       records = { ...records, [`${logId}_${sheetId}`]: sheetRecords };
-
-      get().updateSheetTotal({
-        logId,
-        sheetId,
-        currency,
-        total: amount - record.amount,
-        additive: true,
-      });
 
       set(() => ({ records }));
     }
@@ -220,20 +221,8 @@ const createSharedSlice: StateCreator<
     let records = get().records;
     let sheetRecords = [...(records[`${logId}_${sheetId}`] || [])];
 
-    sheetRecords
-      .filter((record) => recordIds.includes(record.id))
-      .forEach(({ currency, amount }) => {
-        get().updateSheetTotal({
-          logId,
-          sheetId,
-          currency,
-          total: -amount,
-          additive: true,
-        });
-      });
-
     sheetRecords = sheetRecords.filter(
-      (record) => !recordIds.includes(record.id)
+      (record) => !recordIds.includes(record.id),
     );
 
     records = { ...records, [`${logId}_${sheetId}`]: sheetRecords };
