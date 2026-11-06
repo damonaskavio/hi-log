@@ -1,4 +1,4 @@
-import { Sheet } from "@/store/createSheetSlice";
+import { Sheet, Totals } from "@/store/createSheetSlice";
 import useHiLogStore from "@/store/useHiLogStore";
 import Constants from "@/utils/constant";
 import CurrencySymbolMap from "@/utils/currency";
@@ -13,7 +13,7 @@ import Card from "..";
 import "./index.css";
 
 type SheetCardOptions = {
-  data: Sheet;
+  data: Sheet & { totals: Totals };
   onEdit?: (sheet: Sheet) => void;
   selected?: boolean;
   checked?: boolean;

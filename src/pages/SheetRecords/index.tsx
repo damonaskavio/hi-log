@@ -66,6 +66,7 @@ const SheetRecords = () => {
     updateRecord,
     deleteRecords,
     orderRecord,
+    getSheetTotals,
   ] = useHiLogStore(
     useShallow((state) => [
       state.selectedLog,
@@ -75,16 +76,19 @@ const SheetRecords = () => {
       state.updateRecord,
       state.deleteRecords,
       state.orderRecord,
+      state.getSheetTotals,
     ]),
   );
 
   const { id: logId } = selectedLog || {};
-  const { id: sheetId, totals } = selectedSheet || {};
+  const { id: sheetId } = selectedSheet || {};
 
   const sheetRecords = getRecords({
     logId: selectedLog?.id,
     sheetId: selectedSheet?.id,
   });
+
+  const sheetTotals = getSheetTotals(logId, sheetId);
 
   const getSortedRecords = useCallback(() => {
     cardRefs.current = cardRefs.current.slice(0, sheetRecords.length);
@@ -428,10 +432,10 @@ const SheetRecords = () => {
                   "records",
                 )}`}</div>
                 <div className="content-right">
-                  {totals &&
-                    Object.keys(totals).map((key) => (
+                  {sheetTotals &&
+                    Object.keys(sheetTotals).map((key) => (
                       <p key={key}>{`${CurrencySymbolMap[key]} ${(
-                        totals[key] ?? 0
+                        sheetTotals[key] ?? 0
                       ).toFixed(2)}`}</p>
                     ))}
                 </div>

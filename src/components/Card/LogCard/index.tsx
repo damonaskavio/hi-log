@@ -47,13 +47,13 @@ const LogCard = forwardRef<HTMLDivElement, LogCardProps>(
     const { t } = useTranslation();
     const { id, name, updatedAt, desc } = data;
 
-    const [setSelectedLog, setSelectedSheet, getLogSheets] = useHiLogStore(
-      (state) => [
+    const [setSelectedLog, setSelectedSheet, getLogSheets, getSheetTotals] =
+      useHiLogStore((state) => [
         state.setSelectedLog,
         state.setSelectedSheet,
         state.getLogSheets,
-      ],
-    );
+        state.getSheetTotals,
+      ]);
 
     const [totals, setTotals] = useState<{ [key: string]: number }>();
 
@@ -83,7 +83,9 @@ const LogCard = forwardRef<HTMLDivElement, LogCardProps>(
       const _totals: { [key: string]: number } = {};
 
       for (const logSheet of logSheets) {
-        for (const [key, value] of Object.entries(logSheet.totals)) {
+        for (const [key, value] of Object.entries(
+          getSheetTotals(data.id, logSheet.id),
+        )) {
           _totals[key] = (_totals[key] || 0) + value;
         }
       }

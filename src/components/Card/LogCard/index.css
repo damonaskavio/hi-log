@@ -1,6 +1,6 @@
 .log-card-root {
   .log-card {
-    min-height: 100px;
+    min-height: 150px;
 
     .content {
       flex: 1;

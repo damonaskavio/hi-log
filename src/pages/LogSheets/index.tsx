@@ -15,7 +15,14 @@ import { Sheet } from "@/store/createSheetSlice";
 import useHiLogStore from "@/store/useHiLogStore";
 import sortByField from "@/utils/sortByField";
 import isEmpty from "lodash/isEmpty";
-import { useCallback, useContext, useEffect, useRef, useState } from "react";
+import {
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import { FieldValues } from "react-hook-form";
 import { Trans, useTranslation } from "react-i18next";
 import { CiFilter } from "react-icons/ci";
@@ -28,19 +35,6 @@ import {
 import { Link } from "react-router-dom";
 import { useShallow } from "zustand/react/shallow";
 import "./index.css";
-
-const sortFields = [
-  { label: "name", value: "name" },
-  {
-    label: "amount",
-    value: "totals",
-    fieldFn: (sheet: Sheet) => {
-      return Object.values(sheet.totals).reduce((total, num) => total + num, 0);
-    },
-  },
-  { label: "sheet date", value: "sheetDate" },
-  { label: "updated date", value: "updatedAt" },
-];
 
 const LogSheets = () => {
   const { t } = useTranslation();
@@ -72,6 +66,7 @@ const LogSheets = () => {
     updateSheet,
     deleteSheets,
     orderSheet,
+    getSheetTotals,
   ] = useHiLogStore(
     useShallow((state) => [
       state.sheets,
@@ -84,10 +79,30 @@ const LogSheets = () => {
       state.updateSheet,
       state.deleteSheets,
       state.orderSheet,
-    ])
+      state.getSheetTotals,
+    ]),
   );
 
   const { id: logId } = selectedLog || {};
+
+  const sortFields = useMemo(
+    () => [
+      { label: "name", value: "name" },
+      {
+        label: "amount",
+        value: "totals",
+        fieldFn: (sheet: Sheet) => {
+          return Object.values(getSheetTotals(logId, sheet.id)).reduce(
+            (total, num) => total + num,
+            0,
+          );
+        },
+      },
+      { label: "sheet date", value: "sheetDate" },
+      { label: "updated date", value: "updatedAt" },
+    ],
+    [getSheetTotals, logId],
+  );
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const logSheets = selectedLog ? getLogSheets(logId || "") : [];
@@ -105,7 +120,7 @@ const LogSheets = () => {
     }
 
     return logSheets;
-  }, [sorted, logSheets]);
+  }, [sorted, logSheets, sortFields]);
 
   const isSheetsEmpty = isEmpty(logSheets);
   const isCheckedSheetsEmpty = isEmpty(checkedSheets);
@@ -391,7 +406,7 @@ const LogSheets = () => {
                       }
                     }}
                     key={sheet.id}
-                    data={sheet}
+                    data={{ ...sheet, totals: getSheetTotals(logId, sheet.id) }}
                     onEdit={handleEditModalOpen}
                     selected={selectedSheet?.id === sheet.id}
                     checked={checkedSheets.includes(sheet.id)}
